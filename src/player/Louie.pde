@@ -26,10 +26,19 @@ public class Louie { //<>//
     if (angle >=  2*PI) {
       angle = 0;
     }
-    xpos = xmiddle + (radius * sin( -angle)); // positiv angle changes the direction to counter clockwise
+    xpos = xmiddle + (radius * sin( angle)); // positiv angle changes the direction to clockwise
     ypos = ymiddle + (radius * cos(angle));
     angle =angle + speed; // handles the speed of the rotation
   }
+
+
+
+
+
+
+
+
+
 
   public void movementTest() {
     xpos = xmiddle + (radius * sin( -PI / 4 ));

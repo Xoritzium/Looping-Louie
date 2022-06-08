@@ -1,54 +1,64 @@
-/* //<>//
+ //<>//
+
+/*
 this is not the final view, its just for dev
  */
 public class View {
-  // colors of each player
-  color top = color(255, 0, 0); //red
-  color right = color(0, 255, 0); // green
-  color down = color(0, 0, 255); // blue
-  color left  = color(255, 255, 0); // yellow
-  color louieCol = color(1, 1, 1);
+  /*  // colors of each player
+   color top = color(255, 0, 0); //red
+   color right = color(0, 255, 0); // green
+   color down = color(0, 0, 255); // blue
+   color left  = color(255, 255, 0); // yellow
+   color louieCol = color(1, 1, 1);
+   */
+  PImage top, down, left, right, louie;
+  PImage heart;//optional !
 
-  // die scheiße durch PImage ersetzen !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  PShape louie, louieCorner; // images of the players and louie
+  public View() {
 
-  public View(float widthP, float heightP, float widthL, float heightL) {
-
-    louie = createShape(RECT, 0, 0, widthL, heightL);
-    fill(louieCol);
+    louie = loadImage("virus backround.gif");
+    louie.resize(100, 100);
+    top = loadImage("Spritze.png");
+    down = loadImage("Spritze.png");
+    left = loadImage("Spritze.png");
+    right = loadImage("Spritze.png");
+    heart = loadImage("herz.jpg");
   }
+
 
 
   void drawLouie( float x, float y) {
 
-    shape(louie, x, y);
+    image(louie, x, y);
   }
 
-
-
-
-
+  /*
+1= top
+   2= right
+   3=down
+   4=left
+   */
   void drawPlayer(float x, float y, int which) {
     switch(which) {
     case 0:
-      text("Top", x, y + 40) ;
-      fill(top);
-      shapeMode(CENTER);
+      imageMode(CENTER);
+      image(top, x, y, 200, 200);
+      image(heart, x+200, y+50, 100, 100);
       break;
     case 1:
-      text("Right", x, y);
-      fill(right);
-      shapeMode(CENTER);
+      imageMode(CENTER);
+      image(right, x, y, 200, 200);
+      image(heart, x-50, y+200, 100, 100);
       break;
     case 2:
-      text("Down", x, y + 20);
-      fill(down);
-      shapeMode(CENTER);
+      imageMode(CENTER);
+      image(down, x, y, 200, 200);
+      image(heart, x-200, y-50, 100, 100);
       break;
     case 3:
-      text("Left", x, y);
-      fill(left);
-      shapeMode(CENTER);
+      imageMode(CENTER);
+      image(left, x, y, 200, 200);
+      image(heart, x+50, y-200, 100, 100);
       break;
     default:
       System.err.println("invalid Player adressed, check call of 'drawPlayer'");
