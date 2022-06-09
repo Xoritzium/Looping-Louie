@@ -1,4 +1,4 @@
-int counter; //<>// //<>// //<>//
+ //<>// //<>// //<>//
 
 // center of the picture, origin from where everthing gets calculated
 float originX = 1920 / 2; //width / 2;
@@ -8,7 +8,7 @@ Louie louie;
 
 
 float louieRadius = 450;
-float louieSpeed = 0.015; // speed of louies Movement [0.0 - 0.05]
+float louieSpeed = 0.01; // speed of louies Movement [0.0 - 0.05]
 
 
 ///////////////////// Koordinates and Hitboxes from the players ////////////////
@@ -38,22 +38,22 @@ float[] rightBounds = {
   originX + (louieRadius *sin((9/8)*PI)), // right
   originY + (louieRadius *cos((9/8)*PI)),
   originX + (louieRadius * sin((1/2)*PI)),
-  originY + (louieRadius * cos((1/2)*PI)),
+  originY + (louieRadius * cos((1/2)*PI))
 };
 float[] downBounds = {
   originX + (louieRadius *sin((15/8)*PI)), // down
   originY + (louieRadius *cos((15/8)*PI)),
   originX + (louieRadius * sin(2*PI)),
-  originY + (louieRadius * cos(2*PI)),
+  originY + (louieRadius * cos(2*PI))
 };
 float[] leftBounds ={
   originX + (louieRadius *sin((3/8)*PI)), // left
   originY + (louieRadius *cos((3/8)*PI)),
   originX + (louieRadius * sin(PI/2)),
-  originY + (louieRadius * cos(PI/2)),
+  originY + (louieRadius * cos(PI/2))
 };
 
-
+int counter = 0;
 View view; // a view to bound all visuals
 /*
 Keep things clean, everything which i need and is not defined for setup() is stored here
@@ -61,10 +61,10 @@ Keep things clean, everything which i need and is not defined for setup() is sto
 void mySetup() {
   /////////// initiate all instances //////////////
   louie = new Louie(louieRadius, louieSpeed);
-  top = new Player(topx, topy, topBounds);
-  right = new Player(rightx, righty, rightBounds);
-  left = new Player(leftx, lefty, leftBounds);
-  down = new Player(downx, downy, leftBounds);
+  top = new Player(topx, topy, 0);
+  right = new Player(rightx, righty, 0);
+  left = new Player(leftx, lefty, 0);
+  down = new Player(downx, downy, 0);
   view = new View();
 }
 /*
@@ -81,8 +81,7 @@ void myDraw() {
   louie.movement(); // updates louies position every frame
   view.drawLouie(louie.xpos, louie.ypos); // draw louie (always in the same frame as louie.movement() !!
 
-  if  (checkPlayerHitLouie(louie.xpos, louie.ypos, topBounds)) {
-
+  if  (checkPlayerHitLouie(louie.xpos, louie.ypos)) {
     counter++;
   }
   text("top hits: " + counter, 20, 40);
@@ -92,10 +91,16 @@ void setup() {
   frameRate(60); // should be stick to 60 !
   // background(0, 0, 0);
   fullScreen();
+  // size(600,40);
   mySetup();
 }
 void draw() {
   myDraw();
+  
+  if(counter++ < 200) {
+   text("qqqqqqqqqqqqqqqqqqqqqqq", 120,120); 
+  }
+ 
 }
 
 
@@ -113,17 +118,18 @@ if a Player hits Louie return true
  @param ly = louies ypos
  @param b = bounds of the individual player
  */
-boolean checkPlayerHitLouie(float lx, float ly, float[] b) { // exemplarisch für top // einmal das ganze Raster ablaufen von lower x/y bis higher x/y
- 
- float i = originX + (louieRadius *sin((7/8)*PI));
- while( i <originX + (louieRadius * sin(PI)) ) 
-  if (lx >= b[0] && lx <= b[2] &&
-    ly <= b[1] && ly >=b[3]) {
-       System.exit(0);
-      return true;
+boolean checkPlayerHitLouie(float lx, float ly) { // exemplarisch für top // einmal das ganze Raster ablaufen von lower x/y bis higher x/y
+ float[] topBounds = {topx - 200, topx, topy, topy+200};
+  if (lx >= topBounds[0] - 200 && lx <= topBounds[1]
+    && ly >= topy && ly <= topy +200 && top.hadJumped()) {
+    return true;
   }
   return false;
 }
+//      xpos = xmiddle + (radius * sin( -angle)); // positiv angle changes the direction to clockwise
+//   ypos = ymiddle + (radius * cos(angle));
+
+
 
 
 // better safe then sorry/////////////
