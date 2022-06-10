@@ -4,11 +4,8 @@ public class Player {
 
   float xpos; // position of the player
   float ypos;
-  float pWidth;
-  float pHeight;
-  float defaultHeight; // defines how hight the player must jump to trigger "hadJumped()"
-  boolean hitsLouie;
-  boolean coneHit;
+  float defaultHeight; // defines how high the player must jump to trigger "hadJumped()"
+  boolean coneHit; // unessescary?
   
   
   Cone cone;
@@ -21,6 +18,7 @@ public class Player {
     this.defaultHeight = defaultHeight;
   }
   /*
+  Contains the conditions if a Player had Jumped.
   @return true if the player had jumped
    */
   public boolean hadJumped() {
@@ -31,10 +29,7 @@ public class Player {
     }
     return false;
   }
-  public boolean playerHitLouie() {
-    return false;
-  }
-
+  
 
   // capsulate the information for the cones
   private class Cone {

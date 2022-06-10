@@ -1,11 +1,10 @@
- //<>// //<>// //<>//
+//<>// //<>// //<>// //<>// //<>// //<>// //<>//
 
 // center of the picture, origin from where everthing gets calculated
 float originX = 1920 / 2; //width / 2;
 float originY = 1080 / 2; //width /2;
 //////////Louie/////////////////
 Louie louie;
-
 
 float louieRadius = 450;
 float louieSpeed = 0.01; // speed of louies Movement [0.0 - 0.05]
@@ -14,7 +13,10 @@ float louieSpeed = 0.01; // speed of louies Movement [0.0 - 0.05]
 ///////////////////// Koordinates and Hitboxes from the players ////////////////
 // all Players
 Player top, right, left, down;
-
+// every PlayersWidth;
+float playerWidth= 200;
+float playerHeight=200;
+// cooridnates to spawn/stay
 float topx = originX;
 float topy = originY - louieRadius;
 
@@ -26,32 +28,11 @@ float downy =originY + louieRadius;
 
 float leftx = originX - louieRadius;
 float lefty = originY;
-
-
-float[]topBounds = {
-  originX + (louieRadius *sin((7/8)*PI)), // top lowerBound X
-  originY + (louieRadius *cos((7/8) * PI)), //top lowerBound Y
-  originX + (louieRadius * sin(PI)), // top higherBound X
-  originY +(louieRadius * sin(PI))// top higher bound Y
-};
-float[] rightBounds = {
-  originX + (louieRadius *sin((9/8)*PI)), // right
-  originY + (louieRadius *cos((9/8)*PI)),
-  originX + (louieRadius * sin((1/2)*PI)),
-  originY + (louieRadius * cos((1/2)*PI))
-};
-float[] downBounds = {
-  originX + (louieRadius *sin((15/8)*PI)), // down
-  originY + (louieRadius *cos((15/8)*PI)),
-  originX + (louieRadius * sin(2*PI)),
-  originY + (louieRadius * cos(2*PI))
-};
-float[] leftBounds ={
-  originX + (louieRadius *sin((3/8)*PI)), // left
-  originY + (louieRadius *cos((3/8)*PI)),
-  originX + (louieRadius * sin(PI/2)),
-  originY + (louieRadius * cos(PI/2))
-};
+// hitboxes
+float[] topBounds = {topx - playerWidth, topx, topy, topy + playerHeight};
+float[] rightBounds = { rightx - playerWidth, rightx, righty, righty + playerHeight};
+float[] downBounds = { downx, downx + playerWidth, downy, downy + playerHeight};            /////////down geht nicht
+float[] leftBounds ={leftx, leftx+playerWidth, lefty, lefty + playerHeight };
 
 int counter = 0;
 View view; // a view to bound all visuals
@@ -71,7 +52,7 @@ void mySetup() {
 Keep things clean, everything which i need and is not defined for void() is stored here
  */
 void myDraw() {
-  background(20, 20, 20); // refresh the canvas
+  background(20, 20, 20); // refresh the canvas every second
 
   view.drawPlayer(top.xpos, top.ypos, 0);
   view.drawPlayer(right.xpos, right.ypos, 1);
@@ -81,7 +62,15 @@ void myDraw() {
   louie.movement(); // updates louies position every frame
   view.drawLouie(louie.xpos, louie.ypos); // draw louie (always in the same frame as louie.movement() !!
 
-  if  (checkPlayerHitLouie(louie.xpos, louie.ypos)) {
+  if  (checkPlayerHitLouie(louie.xpos, louie.ypos, top, topBounds)) { // top
+    counter++;
+  }
+  if  (checkPlayerHitLouie(louie.xpos, louie.ypos, right, rightBounds)) { // right
+    counter++;
+  }
+  if  (checkPlayerHitLouie(louie.xpos, louie.ypos, down, downBounds)) { // down
+    counter++;
+  } else if  (checkPlayerHitLouie(louie.xpos, louie.ypos, left, leftBounds)) { // left
     counter++;
   }
   text("top hits: " + counter, 20, 40);
@@ -96,11 +85,6 @@ void setup() {
 }
 void draw() {
   myDraw();
-  
-  if(counter++ < 200) {
-   text("qqqqqqqqqqqqqqqqqqqqqqq", 120,120); 
-  }
- 
 }
 
 
@@ -114,20 +98,20 @@ boolean isPlayerHit() {
 
 /*
 if a Player hits Louie return true
+ is called in a specific order in draw()
  @param lx = louies xpos
  @param ly = louies ypos
- @param b = bounds of the individual player
+ @param p = the player which hitbox is checked
+ @param hb = bounds of the individual player
  */
-boolean checkPlayerHitLouie(float lx, float ly) { // exemplarisch für top // einmal das ganze Raster ablaufen von lower x/y bis higher x/y
- float[] topBounds = {topx - 200, topx, topy, topy+200};
-  if (lx >= topBounds[0] - 200 && lx <= topBounds[1]
-    && ly >= topy && ly <= topy +200 && top.hadJumped()) {
+boolean checkPlayerHitLouie(float lx, float ly, Player p, float[] hb) {
+  if (lx >= hb[0] && lx <= hb[1]
+    && ly >= hb[2] && ly <= hb[3] && p.hadJumped()) { //
     return true;
   }
   return false;
 }
-//      xpos = xmiddle + (radius * sin( -angle)); // positiv angle changes the direction to clockwise
-//   ypos = ymiddle + (radius * cos(angle));
+
 
 
 
