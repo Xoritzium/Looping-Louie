@@ -1,5 +1,15 @@
 //<>// //<>// //<>// //<>// //<>// //<>// //<>//
 
+/* TODO:
+ -Lebensabzug einbauen
+ -Hitboxen überarbeiten (die sind zuweit vor der Grafik)
+ -Radiusübergang anpassen, schleichende Übergänge
+ -Grafik (in blender und dann als gif oder MP4 rendern.
+ 
+ */
+
+
+
 // center of the picture, origin from where everthing gets calculated
 float originX = 1920 / 2; //width / 2;
 float originY = 1080 / 2; //width /2;
@@ -8,6 +18,7 @@ Louie louie;
 
 float louieRadius = 450;
 float louieSpeed = 0.01; // speed of louies Movement [0.0 - 0.05]
+float hitDuration = 65; // duration in frames how long Louies Collision is set of
 
 
 ///////////////////// Koordinates and Hitboxes from the players ////////////////
@@ -29,19 +40,26 @@ float downy =originY + louieRadius;
 float leftx = originX - louieRadius;
 float lefty = originY;
 // hitboxes
+//each Player has a Hitbox of a 200x200 box
+// not perfectly balance = right has a frame less time to manipulate louie
 float[] topBounds = {topx - playerWidth, topx, topy, topy + playerHeight};
 float[] rightBounds = { rightx - playerWidth, rightx, righty, righty + playerHeight};
-float[] downBounds = { downx, downx + playerWidth, downy, downy + playerHeight};            /////////down geht nicht
+float[] downBounds = { downx, downx + playerWidth, downy - playerHeight/2, downy + playerHeight / 2};
 float[] leftBounds ={leftx, leftx+playerWidth, lefty, lefty + playerHeight };
+////////////////// temporary//////////////////////
+int counter1 = 0;
+int counter2 = 0;
+int counter3 = 0;
+int counter4=0;
 
-int counter = 0;
+
 View view; // a view to bound all visuals
 /*
 Keep things clean, everything which i need and is not defined for setup() is stored here
  */
 void mySetup() {
   /////////// initiate all instances //////////////
-  louie = new Louie(louieRadius, louieSpeed);
+  louie = new Louie(louieRadius, louieSpeed, hitDuration);
   top = new Player(topx, topy, 0);
   right = new Player(rightx, righty, 0);
   left = new Player(leftx, lefty, 0);
@@ -59,21 +77,34 @@ void myDraw() {
   view.drawPlayer(down.xpos, down.ypos, 2);
   view.drawPlayer(left.xpos, left.ypos, 3);
 
+
+
+  if  (checkPlayerHitLouie(louie.xpos, louie.ypos, top, topBounds)) { // top
+    louie.indicator = true; // set collision off
+    counter1++;
+  } else if  (checkPlayerHitLouie(louie.xpos, louie.ypos, right, rightBounds)) { // right
+    louie.indicator = true; // set collision off
+    counter2++;
+  } else if  (checkPlayerHitLouie(louie.xpos, louie.ypos, down, downBounds)) { // down
+    louie.indicator = true; // set collision off
+    counter3++;
+  } else  if  (checkPlayerHitLouie(louie.xpos, louie.ypos, left, leftBounds)) { // left
+    louie.indicator = true; // set collision off
+    counter4++;
+  }
+
+  if (isPlayerHit() == 1) {
+    top.cone.cones--;
+  }
+  text("TopCones: " + top.cone.cones, 20, 120);
   louie.movement(); // updates louies position every frame
   view.drawLouie(louie.xpos, louie.ypos); // draw louie (always in the same frame as louie.movement() !!
 
-  if  (checkPlayerHitLouie(louie.xpos, louie.ypos, top, topBounds)) { // top
-    counter++;
-  }
-  if  (checkPlayerHitLouie(louie.xpos, louie.ypos, right, rightBounds)) { // right
-    counter++;
-  }
-  if  (checkPlayerHitLouie(louie.xpos, louie.ypos, down, downBounds)) { // down
-    counter++;
-  } else if  (checkPlayerHitLouie(louie.xpos, louie.ypos, left, leftBounds)) { // left
-    counter++;
-  }
-  text("top hits: " + counter, 20, 40);
+
+  text("top hits: " + counter1, 20, 40);
+  text("right hits: " + counter2, 20, 60);
+  text("down hits: " + counter3, 20, 80);
+  text("left hits: " + counter4, 20, 100);
 }
 
 void setup() {
@@ -88,11 +119,38 @@ void draw() {
 }
 
 
-
-/* if a Player is hit his value "coneHit" will set true and this returns true as well
+/* returns wheter louie hitted a 
+ @return :
+ 0: no playerHit
+ 1: top hit
+ 2: right hit
+ 3: down hit
+ 4: left hit
+         
  */
-boolean isPlayerHit() {
-  return false;
+int isPlayerHit() { 
+  //top
+  if (louie.xpos >= topx && louie.xpos <= topx+ 5 // the "hitbox" of the cones/hearts and if louies hitbox is on
+    &&louie.ypos >= topy && louie.ypos <= topy + 5 && louie.indicator) {
+    return 1;
+  }else if(louie.xpos >= rightx && louie.xpos <= rightx + 5 &&
+  louie.ypos >= righty && louie.ypos <= righty + 5 && !louie.indicator){
+   return 2; 
+  }else if (louie.xpos >= downx && louie.xpos <= downx + 5 &&
+  louie.ypos >= downy &&  louie.ypos <= downy + 5 && !louie.indicator){
+   return 3;
+  }else if() {
+    return 4
+  }else
+  
+  //right
+
+  //down
+
+  //left
+
+  return 0; // casul value
+}
 }
 
 
@@ -106,7 +164,8 @@ if a Player hits Louie return true
  */
 boolean checkPlayerHitLouie(float lx, float ly, Player p, float[] hb) {
   if (lx >= hb[0] && lx <= hb[1]
-    && ly >= hb[2] && ly <= hb[3] && p.hadJumped()) { //
+    && ly >= hb[2] && ly <= hb[3] && p.hadJumped()) { //had jumped einfügen
+
     return true;
   }
   return false;

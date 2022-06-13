@@ -1,4 +1,4 @@
- //<>//
+//import GifAnimation.*; //<>//
 
 /*
 this is not the final view, its just for dev
@@ -11,11 +11,13 @@ public class View {
    color left  = color(255, 255, 0); // yellow
    color louieCol = color(1, 1, 1);
    */
-  PImage top, down, left, right, louie;
+  PImage top, down, left, right;
   PImage heart;//optional !
-
+  //Gif louie;
+  PImage louie;
   public View() {
-
+    
+    //louie = new Gif("virus backround.gif");
     louie = loadImage("virus backround.gif");
     louie.resize(100, 100);
     top = loadImage("Spritze.png");
@@ -28,7 +30,6 @@ public class View {
 
 
   void drawLouie( float x, float y) {
-
     image(louie, x, y);
   }
 
