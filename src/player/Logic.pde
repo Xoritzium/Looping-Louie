@@ -77,7 +77,7 @@ void myDraw() {
   view.drawPlayer(down.xpos, down.ypos, 2);
   view.drawPlayer(left.xpos, left.ypos, 3);
 
-
+  ///////////////////////Player hits Louie////////////////////////////
 
   if  (checkPlayerHitLouie(louie.xpos, louie.ypos, top, topBounds)) { // top
     louie.indicator = true; // set collision off
@@ -92,11 +92,23 @@ void myDraw() {
     louie.indicator = true; // set collision off
     counter4++;
   }
+////////////////////////// Louie hits a players cone/////////////////////
+  int hit = isPlayerHit();
 
-  if (isPlayerHit() == 1) {
+  if (hit ==0) {
     top.cone.cones--;
+  } else if (hit ==1) {
+    right.cone.cones--;
+  } else if (hit==2) {
+    down.cone.cones--;
+  } else if (hit ==3) {
+    left.cone.cones--;
   }
+
   text("TopCones: " + top.cone.cones, 20, 120);
+  text("RightCones: " + right.cone.cones, 20, 140);
+  text("DownCones: " + down.cone.cones, 20, 160);
+  text("LeftCones: " + left.cone.cones, 20, 180);
   louie.movement(); // updates louies position every frame
   view.drawLouie(louie.xpos, louie.ypos); // draw louie (always in the same frame as louie.movement() !!
 
@@ -119,39 +131,33 @@ void draw() {
 }
 
 
-/* returns wheter louie hitted a 
+/* returns wheter louie hitted a
  @return :
- 0: no playerHit
- 1: top hit
- 2: right hit
- 3: down hit
- 4: left hit
-         
+ -1: no playerHit
+ 0: top hit
+ 1: right hit
+ 2: down hit
+ 3: left
+ 
  */
-int isPlayerHit() { 
+private int isPlayerHit() {
   //top
   if (louie.xpos >= topx && louie.xpos <= topx+ 5 // the "hitbox" of the cones/hearts and if louies hitbox is on
-    &&louie.ypos >= topy && louie.ypos <= topy + 5 && louie.indicator) {
+    &&louie.ypos >= topy && louie.ypos <= topy + 5 && !louie.indicator) {
+    return 0;
+  } else if (louie.xpos >= rightx && louie.xpos <= rightx + 5 &&
+    louie.ypos >= righty && louie.ypos <= righty + 5 && !louie.indicator) {
     return 1;
-  }else if(louie.xpos >= rightx && louie.xpos <= rightx + 5 &&
-  louie.ypos >= righty && louie.ypos <= righty + 5 && !louie.indicator){
-   return 2; 
-  }else if (louie.xpos >= downx && louie.xpos <= downx + 5 &&
-  louie.ypos >= downy &&  louie.ypos <= downy + 5 && !louie.indicator){
-   return 3;
-  }else if() {
-    return 4
-  }else
-  
-  //right
-
-  //down
-
-  //left
-
-  return 0; // casul value
+  } else if (louie.xpos >= downx-5 && louie.xpos <= downx  &&
+    louie.ypos >= downy -5&&  louie.ypos <= downy  && !louie.indicator) {
+    return 2;
+  } else if (louie.xpos >= leftx && louie.xpos <= leftx +5 &&
+    louie.ypos >= lefty && louie.ypos <= lefty+5 && !louie.indicator) {
+    return 3;
+  }
+  return -1; // casul value
 }
-}
+
 
 
 /*

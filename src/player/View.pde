@@ -16,7 +16,7 @@ public class View {
   //Gif louie;
   PImage louie;
   public View() {
-    
+
     //louie = new Gif("virus backround.gif");
     louie = loadImage("virus backround.gif");
     louie.resize(100, 100);
@@ -34,8 +34,8 @@ public class View {
   }
 
   /*
-1= top
-   2= right
+   1=top
+   2=right
    3=down
    4=left
    */
