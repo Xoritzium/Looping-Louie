@@ -1,4 +1,6 @@
 //import GifAnimation.*; //<>//
+import processing.video.*;
+
 
 /*
 this is not the final view, its just for dev
@@ -15,6 +17,8 @@ public class View {
   PImage heart;//optional !
   //Gif louie;
   PImage louie;
+  Movie jumpTop;
+  
   public View() {
 
     //louie = new Gif("virus backround.gif");
@@ -65,5 +69,11 @@ public class View {
       System.err.println("invalid Player adressed, check call of 'drawPlayer'");
       break;
     }
+  }
+  
+  void endScreen(){
+    background(0,0,0);
+   text("game over", 500,500); 
+   textSize(100);
   }
 }
