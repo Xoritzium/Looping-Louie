@@ -36,7 +36,7 @@ public class Louie { //<>//
    */
   public void movement() {
     float tr = gotHit();
-  
+
 
     if (angle >=  2*PI) { // keep somehow control over the angle
       angle = 0;
@@ -50,10 +50,10 @@ public class Louie { //<>//
   private float gotHit() {
 
     if (indicator) { // running collision of
-     
+
       if (indicatorCounter < collisionOn) {
         indicatorCounter++;
-         speed = tempSpeed;
+        speed = tempSpeed;
       } else {
         indicator = false; // reset the collision to status quo
         indicatorCounter = 0;
@@ -64,5 +64,4 @@ public class Louie { //<>//
       return radius;
     }
   } // 3 methods: 1= who controlls the collision 2 =changes the speed 3= changes the radius
-  
 }

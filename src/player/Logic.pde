@@ -3,7 +3,7 @@
 /* TODO:
  -Radiusübergang anpassen, schleichende Übergänge
  -Grafik (in blender und dann als gif oder MP4 rendern.
-
+ 
  */
 ////////////////logic stuff ///////////////////////////////
 boolean gameOver = false;
@@ -19,7 +19,7 @@ Louie louie;
 
 float louieRadius = 450;
 float louieSpeed = 0.01; // speed of louies Movement [0.01 , doubled = 0.02]
-float hitDuration = 65 / 1; // duration in frames how long Louies Collision is set of or /2 if the speed is doubled
+float hitDuration = 65 / 1; // duration in frames how long Louies Collision is set of or /2 if the speed is doubled !!!!!must be overwritten in louie, is not the case yet
 
 
 ///////////////////// Koordinates and Hitboxes from the players ////////////////
@@ -47,6 +47,10 @@ float[] topBounds = {topx - playerWidth, topx, topy, topy + playerHeight};
 float[] rightBounds = { rightx - playerWidth, rightx, righty- playerHeight, righty};
 float[] downBounds = { downx, downx + playerWidth, downy - playerHeight, downy + playerHeight};
 float[] leftBounds ={leftx, leftx+playerWidth, lefty, lefty + playerHeight };
+
+
+boolean jumpTop = false;
+int topJumpCounter= 0;
 ////////////////// temporary//////////////////////
 int counter1 = 0;
 int counter2 = 0;
@@ -65,20 +69,20 @@ void mySetup() {
   right = new Player(rightx, righty, 0);
   left = new Player(leftx, lefty, 0);
   down = new Player(downx, downy, 0);
-  view = new View();
+  view = new View(this);
 }
 /*
 Keep things clean, everything which i need and is not defined for void() is stored here
  */
 void myDraw() {
   if (!gameOver) {// while game is still running
-
+    setGameOver();
     background(20, 20, 20); // refresh the canvas every second
 
-    view.drawPlayer(top.xpos, top.ypos, 0);
-    view.drawPlayer(right.xpos, right.ypos, 1);
-    view.drawPlayer(down.xpos, down.ypos, 2);
-    view.drawPlayer(left.xpos, left.ypos, 3);
+    view.drawPlayer(top.xpos, top.ypos, 0, jumpTop);
+    view.drawPlayer(right.xpos, right.ypos, 1, false);
+    view.drawPlayer(down.xpos, down.ypos, 2, false);
+    view.drawPlayer(left.xpos, left.ypos, 3, false);
 
     ///////////////////////Player hits Louie////////////////////////////
 
@@ -113,7 +117,20 @@ void myDraw() {
     text("DownCones: " + down.cone.cones, 20, 160);
     text("LeftCones: " + left.cone.cones, 20, 180);
     louie.movement(); // updates louies position every frame
+/*
+    if (playerJumps(top)) {
+      view.drawPlayer(top.xpos, top.ypos, 0, jumpTop);
+    } else {
+      view.drawPlayer(top.xpos, top.ypos, 0, jumpTop);
+    }
+    */
+    view.drawPlayer(right.xpos, right.ypos, 1, false);
+    view.drawPlayer(down.xpos, down.ypos, 2, false);
+    view.drawPlayer(left.xpos, left.ypos, 3, false);
+
     view.drawLouie(louie.xpos, louie.ypos); // draw louie (always in the same frame as louie.movement() !!
+
+
 
     /*
   text("top hits: " + counter1, 20, 40);
@@ -146,7 +163,7 @@ void draw() {
  
  */
 private int isPlayerHit() {
-//  setGameOver(); // test if the game should end and starts the gameOver part if so
+  //  setGameOver(); // test if the game should end and starts the gameOver part if so
 
   if (louie.xpos >= topx && louie.xpos <= topx+ 5 // the "hitbox" of the cones/hearts and if louies hitbox is on
     &&louie.ypos >= topy && louie.ypos <= topy + 5 && !louie.indicator) {
@@ -161,7 +178,7 @@ private int isPlayerHit() {
     louie.ypos >= lefty  && louie.ypos <= lefty + 5 && !louie.indicator) {
     return 3;
   }
-  return -1; // casul value
+  return -1; // casual value
 }
 
 
@@ -176,8 +193,7 @@ private int isPlayerHit() {
  */
 boolean checkPlayerHitLouie(float lx, float ly, Player p, float[] hb) {
   if (lx >= hb[0] && lx <= hb[1]
-    && ly >= hb[2] && ly <= hb[3] && p.hadJumped()) { //had jumped einfügen
-
+    && ly >= hb[2] && ly <= hb[3] && p.hadJumped()) {
     return true;
   }
   return false;
@@ -198,32 +214,17 @@ private void gameOver() {
   view.endScreen();
 }
 
-
-
-
-
-// better safe then sorry/////////////
-/*
-float topLB =originX + (louieRadius *sin((7/8)*PI)); //LB = lowerBound
- y=originY + (louieRadius *cos((7/8) * PI));
- 
- float topHB =originx + (louieRadius * sin(PI));     // HB = higherBound
- y= originY +(LouieRadius * sin(PI));
- float rightLB =originX + (louieRadius *sin((9/8)*PI));//
- y = originy + (louieRadius *cos((9/8)*PI));
- 
- float rightHB =originY + (louieRadius * sin((1/2)*PI));
- y=originY + (louieRadius * cos((1/2)*PI));
- 
- float downLB =originX + (louieRadius *sin((15/8)*PI));
- y=originY + (louieRadius *cos((15/8)*PI));
- 
- float downHB =originY + (louieRadius * sin(2*PI));
- y=originY + (louieRadius * cos(2*PI));
- 
- float leftLB =originX + (louieRadius *sin((3/8)*PI));
- y=originY + (louieRadius *cos((3/8)*PI));
- 
- float leftHB =originX + (louieRadius * sin(PI/2));
- y=originY + (louieRadius * cos(PI/2));
- */
+boolean playerJumps(Player p) {
+  if (p.hadJumped()) { // checks if a player had jumped
+    jumpTop =true; // auslagern !
+    if (topJumpCounter < 46) {
+      view.drawPlayer(top.xpos, top.ypos, 0, jumpTop);
+      topJumpCounter++;
+    } else {
+      jumpTop = false;
+      topJumpCounter = 0;
+    }
+    return true;
+  }
+  return false;
+}
