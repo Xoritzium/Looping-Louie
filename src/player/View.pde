@@ -17,7 +17,11 @@ public class View {
   PImage heart;//optional !
   //Gif louie;
   PImage louie;
+
   Movie jumpTop;
+  Movie idleTop;
+  int counterTop =0;
+  boolean jumpedTop = false;
 
   public View(PApplet p) {
 
@@ -30,8 +34,8 @@ public class View {
     right = loadImage("Spritze.png");
     heart = loadImage("herz.jpg");
     jumpTop = new Movie(p, "playerBlue-Jump.mp4");
-
-    //jumpTop.loop();
+    idleTop = new Movie(p, "playerBlue-Idle.mp4");
+    idleTop.loop();
   }
 
 
@@ -46,17 +50,33 @@ public class View {
    2=down
    3=left
    */
-  void drawPlayer(float x, float y, int which, boolean jumped) {
+  void drawPlayer(float x, float y, int which) {
+
     switch(which) {
     case 0:
-      imageMode(CENTER);
-      image(top, x, y, 200, 200);
-      if(jumped){
-      image(jumpTop, x,y, 200,200);
+  drawTopIdle();
+   /*
+   //   imageMode(CENTER);
+     // image(idleTop, x, y,200,200);
+      if (jumpedTop) {
+        if (counterTop < 46) {
+          counterTop++;
+          image(jumpTop, x, y, 200, 200);
+        } else {
+          jumpedTop = false;
+          counterTop = 0;
+          idleTop.loop();
+          jumpTop.stop();
+        }
+      } else {
+        image(idleTop, x, y, 200, 200);
       }
       
+    */  
       image(heart, x+200, y+50, 100, 100);
       break;
+      
+      
     case 1:
       imageMode(CENTER);
       image(right, x, y, 200, 200);
@@ -83,8 +103,24 @@ public class View {
     text("game over", 500, 500);
     textSize(100);
   }
-
+  ////////////// movie stuff//////////////
   void movieEvent(Movie m) {
     m.read();
   }
+  
+  void eventTop(){
+   jumpTop.loop();
+   idleTop.stop();
+   jumpedTop = true;
+   counterTop = 0;
+   
+  }
+  void drawTopIdle(){
+    image(top, 200,200,200,200);
+   image(idleTop,0,0,200,200); 
+  }
+  
+  
+  
+  
 }

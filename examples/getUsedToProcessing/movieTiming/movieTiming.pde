@@ -1,10 +1,12 @@
 import processing.video.*;
 
-Movie jump;
-Movie idle;
+Movie jump;////////
+Movie idle;////////
 
 boolean jumping = false;
 int counter = 0;
+
+PImage s;
 
 
 void setup() {
@@ -12,16 +14,21 @@ void setup() {
   jump = new Movie(this, "playerBlue-Jump.mp4");
   idle = new Movie(this, "playerBlue-Idle.mp4");
   // jump.play();
-  idle.loop();
+  idle.loop();////////////
+  s = loadImage("Spritze.png");
 }
 
 void draw() {
   
-image(idle,0,0); // view.draw play (true)
+
+  
+  background(255,0,0);
+  
   if (jumping) { // start jump animation
     if (counter < 46) {
       counter++;
       image(jump, 0, 0);///////////////////////
+      image(s,0,0,100,100);
     } else {
       jumping = false;
       counter = 0;
@@ -31,8 +38,17 @@ image(idle,0,0); // view.draw play (true)
     }
   } else {
     image(idle, 0, 0);/////////////////////
+    image(s,0,0,100,100);
    /// idle.loop();
   }
+  
+  
+  
+  
+  
+  
+  
+  
   text("counter: " + counter, 20, 20);
 
   // image(jump, 0, 0);

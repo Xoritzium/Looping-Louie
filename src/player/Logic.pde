@@ -49,8 +49,7 @@ float[] downBounds = { downx, downx + playerWidth, downy - playerHeight, downy +
 float[] leftBounds ={leftx, leftx+playerWidth, lefty, lefty + playerHeight };
 
 
-boolean jumpTop = false;
-int topJumpCounter= 0;
+
 ////////////////// temporary//////////////////////
 int counter1 = 0;
 int counter2 = 0;
@@ -79,11 +78,6 @@ void myDraw() {
     setGameOver();
     background(20, 20, 20); // refresh the canvas every second
 
-    view.drawPlayer(top.xpos, top.ypos, 0, jumpTop);
-    view.drawPlayer(right.xpos, right.ypos, 1, false);
-    view.drawPlayer(down.xpos, down.ypos, 2, false);
-    view.drawPlayer(left.xpos, left.ypos, 3, false);
-
     ///////////////////////Player hits Louie////////////////////////////
 
     if  (checkPlayerHitLouie(louie.xpos, louie.ypos, top, topBounds)) { // top
@@ -101,7 +95,6 @@ void myDraw() {
     }
     ////////////////////////// Louie hits a players cone/////////////////////
     int hit = isPlayerHit();
-
     if (hit ==0) {
       top.cone.cones--;
     } else if (hit ==1) {
@@ -111,22 +104,22 @@ void myDraw() {
     } else if (hit ==3) {
       left.cone.cones--;
     }
-
+///////////////////////////////////////////////////////////////////
     text("TopCones: " + top.cone.cones, 20, 120);
     text("RightCones: " + right.cone.cones, 20, 140);
     text("DownCones: " + down.cone.cones, 20, 160);
     text("LeftCones: " + left.cone.cones, 20, 180);
     louie.movement(); // updates louies position every frame
-/*
-    if (playerJumps(top)) {
-      view.drawPlayer(top.xpos, top.ypos, 0, jumpTop);
-    } else {
-      view.drawPlayer(top.xpos, top.ypos, 0, jumpTop);
-    }
-    */
-    view.drawPlayer(right.xpos, right.ypos, 1, false);
-    view.drawPlayer(down.xpos, down.ypos, 2, false);
-    view.drawPlayer(left.xpos, left.ypos, 3, false);
+/////////////////////////////////////////////////////////////////////////
+/* 
+    if (top.hadJumped()) {
+      view.eventTop();
+    } 
+  */  
+    view.drawPlayer(top.xpos,top.ypos,0);
+    view.drawPlayer(right.xpos, right.ypos, 1);
+    view.drawPlayer(down.xpos, down.ypos, 2);
+    view.drawPlayer(left.xpos, left.ypos, 3);
 
     view.drawLouie(louie.xpos, louie.ypos); // draw louie (always in the same frame as louie.movement() !!
 
@@ -212,19 +205,4 @@ clean up
  */
 private void gameOver() {
   view.endScreen();
-}
-
-boolean playerJumps(Player p) {
-  if (p.hadJumped()) { // checks if a player had jumped
-    jumpTop =true; // auslagern !
-    if (topJumpCounter < 46) {
-      view.drawPlayer(top.xpos, top.ypos, 0, jumpTop);
-      topJumpCounter++;
-    } else {
-      jumpTop = false;
-      topJumpCounter = 0;
-    }
-    return true;
-  }
-  return false;
 }
