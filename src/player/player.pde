@@ -6,8 +6,8 @@ public class Player {
   float ypos;
   float defaultHeight; // defines how high the player must jump to trigger "hadJumped()"
   boolean coneHit; // unessescary?
-  
-  
+
+  // maybe overingeneured
   Cone cone;
 
 
@@ -19,7 +19,7 @@ public class Player {
   }
   /*
   Contains the conditions if a Player had Jumped.
-  @return true if the player had jumped
+   @return true if the player had jumped
    */
   public boolean hadJumped() {
     if (keyPressed) {
@@ -29,7 +29,7 @@ public class Player {
     }
     return false;
   }
-  
+
 
   // capsulate the information for the cones
   private class Cone {

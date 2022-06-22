@@ -3,8 +3,8 @@ public class Louie { //<>//
   float xpos; // his position
   float ypos;
   // center of louies circle
-  float xmiddle = width/2;
-  float ymiddle = height/2;
+  float xmiddle;
+  float ymiddle;
 
   float radius; // radius of Louies movement, its center is always centered in the middle of the window
   float speed; // defines the speed of louie flying around [0.0; 0.1]
@@ -23,11 +23,13 @@ public class Louie { //<>//
 
 
 
-  public Louie(float radius, float speed, float cON) {
+  public Louie(float radius, float speed, float cON, float xmiddle,float ymiddle) {
     this.radius = radius;
     this.speed = speed;
     this.speed2 = speed;
     this.collisionOn = cON;
+    this.xmiddle = xmiddle;
+    this.ymiddle = ymiddle;
     tempRadius = radius -(radius / 3); //////////////////////////// temporary radius and speed because of the changed radius
     tempSpeed = speed +(speed/2);
   }

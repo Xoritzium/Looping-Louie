@@ -19,12 +19,14 @@ void setup() {
 }
 
 void draw() {
+  background(255,0,0);
+ // image(idle,0,0);
   
 
-  
-  background(255,0,0);
-  
   if (jumping) { // start jump animation
+
+    
+    
     if (counter < 46) {
       counter++;
       image(jump, 0, 0);///////////////////////
@@ -40,8 +42,9 @@ void draw() {
     image(idle, 0, 0);/////////////////////
     image(s,0,0,100,100);
    /// idle.loop();
-  }
-  
+ 
+ }
+ 
   
   
   
@@ -60,7 +63,7 @@ void movieEvent(Movie m) {
 
 void keyPressed() {
   jump.loop();
-  idle.stop();
+//  idle.stop();
   jumping = true;
   counter = 0;
 }
