@@ -1,7 +1,7 @@
- //<>// //<>// //<>//
+//<>// //<>// //<>// //<>// //<>// //<>//
 import processing.video.*;
 
-
+//-> rgb: 300,182,30 = ffb61e   
 /*
 this is not the final view, its just for dev
  */
@@ -25,7 +25,7 @@ public class View {
   PImage[] idleLeft;
 
 
-  Movie idleLouie;
+  //  Movie idleLouie;
   int counterTop =0;
   boolean jumpedTop = false;
   PImage camera;
@@ -34,10 +34,11 @@ public class View {
     camera = loadImage("tempCam.jpg");
 
     heart = loadImage("herz.jpg");////////////////////////
-    idleLouie = new Movie(p, "Louie-Idle-animation.mp4");
-    idleLouie.loop();
+    //   idleLouie = new Movie(p, "Louie-Idle-Animation.mp4");
 
-
+    //   idleLouie.speed(0.125);
+    //    idleLouie.loop();
+    louie = loadImage("\\bluePlayerIdle\\playerBlue0000.png");
     /////load Players
     idleTop = loadIdlePlayer("\\bluePlayerIdle\\playerBlue00");
     idleRight = loadIdlePlayer("\\greenPlayerIdle\\playerGreen00");
@@ -48,10 +49,8 @@ public class View {
 
 
   void drawLouie( float x, float y) {
-    if (idleLouie.available()) {
-      idleLouie.read();
-    }
-    image(idleLouie, x, y, 200, 200);
+
+    image(louie, x, y, 200, 200);
   }
 
   /*
@@ -99,7 +98,7 @@ public class View {
       image(heart, x-200, y-50, 100, 100);
       break;
     case 3:
-          imageMode(CENTER);
+      imageMode(CENTER);
       playDownIdle(x, y);
       image(heart, x+50, y-200, 100, 100);
       break;
@@ -117,7 +116,7 @@ public class View {
 
 
   void drawEndScreen() {
-    background(0, 0, 0);
+    background(255,0,0);
     text("game over", 500, 500);
     textSize(100);
   }
@@ -163,10 +162,10 @@ public class View {
   void playRightIdle(float x, float y) {
     if (rightIdleCounter < idleRight.length) {
       image(idleRight[rightIdleCounter], x, y, 200, 200);
-      rightIdleCounter++; //<>//
+      rightIdleCounter++;
       if (rightIdleCounter == idleRight.length) {
-        rightIdleCounter =0; //<>//
-      } //<>//
+        rightIdleCounter =0;
+      }
     }
   }
   void playDownIdle(float x, float y) {

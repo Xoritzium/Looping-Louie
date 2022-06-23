@@ -24,7 +24,7 @@ public class InGameLogic {
 
 
   /* TODO:
-   -movies zum Laufen bringen
+   -dile/jump neu rendern vor gelben Hintergrund -> die als Movie abspielen !
    -ggf playerHit() und playerHItLouie() noch in methoden mit switches auslagern -> performance
    */
   ////////////////logic stuff ///////////////////////////////
@@ -105,7 +105,7 @@ Keep things clean, everything which i need and is not defined for void() is stor
   void myDraw() {
     if (!gameOver) {// while game is still running
       setGameOver();
-      background(20, 20, 20); // refresh the canvas every second
+      background(#ffb61e); // refresh the canvas every second
 
       ///////////////////////Player hits Louie////////////////////////////
       playerHitLouie();
@@ -215,7 +215,7 @@ Keep things clean, everything which i need and is not defined for void() is stor
 
 
   /*
-sets the gameOver state 
+sets the gameOver state
    */
   private void setGameOver() {
     if (top.cone.cones ==0 || right.cone.cones ==0 ||down.cone.cones ==0 || left.cone.cones ==0) {
