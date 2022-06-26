@@ -1,7 +1,7 @@
 //<>// //<>// //<>// //<>// //<>// //<>//
 import processing.video.*;
 
-//-> rgb: 300,182,30 = ffb61e   
+//-> rgb: 300,182,30 = ffb61e
 /*
 this is not the final view, its just for dev
  */
@@ -13,17 +13,20 @@ public class View {
 
   ///////////////////////top
   int topIdleCounter = 0;
-  PImage[] idleTop;
-  ////////////////////// right
+  Movie top;
+  PImage topHeart;
+  //////////////////// right
   int rightIdleCounter = 0;
-  PImage[] idleRight;
+  Movie right;
+  PImage rightHeart;
   ////////////////////// down
   int downIdleCounter =0;
-  PImage[] idleDown;
+  Movie down;
+  PImage downHeart;
   ////////////////////// left
   int leftIdleCounter =0;
-  PImage[] idleLeft;
-
+  Movie left;
+  PImage leftHeart;
 
   //  Movie idleLouie;
   int counterTop =0;
@@ -33,23 +36,29 @@ public class View {
   public View(PApplet p) {
     camera = loadImage("tempCam.jpg");
 
-    heart = loadImage("herz.jpg");////////////////////////
-    //   idleLouie = new Movie(p, "Louie-Idle-Animation.mp4");
+    ///////hearts ////////
+    topHeart = loadImage("\\hearts\\heart-blue.png");
+    rightHeart = loadImage("\\hearts\\heart-yellow.png");
+    downHeart = loadImage("\\hearts\\heart-red.png");
+    leftHeart = loadImage("\\hearts\\heart-green.png");
+    
 
-    //   idleLouie.speed(0.125);
-    //    idleLouie.loop();
-    louie = loadImage("\\bluePlayerIdle\\playerBlue0000.png");
+    louie = loadImage("louie-static.png");
+
+    top = new Movie(p, "\\Player-idle\\player-blue-idle.mp4");
+    top.loop();
     /////load Players
-    idleTop = loadIdlePlayer("\\bluePlayerIdle\\playerBlue00");
-    idleRight = loadIdlePlayer("\\greenPlayerIdle\\playerGreen00");
-    idleDown = loadIdlePlayer("\\redPlayerIdle\\playerRed00");
-    idleLeft = loadIdlePlayer("\\yellowPlayerIdle\\playerYellow00");
+    right = new Movie(p, "\\Player-idle\\player-yellow-idle.mp4");
+    right.loop();
+    down = new Movie(p, "\\Player-idle\\player-red-idle.mp4");
+    down.loop();
+    left = new Movie(p, "\\Player-idle\\player-green-idle.mp4");
+    left.loop();
   }
 
 
 
   void drawLouie( float x, float y) {
-
     image(louie, x, y, 200, 200);
   }
 
@@ -63,11 +72,16 @@ public class View {
 
     switch(which) {
     case 0:
-      playTopIdle(x, y);
+      /*   if(top.available()){
+       top.read();
+       }
+       */
+      movieEvent(top);
+      imageMode(CENTER);
+      image(top, x, y, 200, 200);
 
-      /*   imageMode(CENTER);
-       videoTop(idleTop, jumpTop);
-       //     image(idleTop, x, y + 50, 200, 200);
+      /*
+        image(idleTop, x, y + 50, 200, 200);
        if (jumpedTop) {
        if (counterTop < 46) {
        counterTop++;
@@ -83,24 +97,27 @@ public class View {
        }
        
        */
-      image(heart, x+200, y+50, 100, 100);
+      image(topHeart, x+100, y+50, 200, 200);
       break;
 
 
     case 1:
       imageMode(CENTER);
-      playRightIdle(x, y);
-      image(heart, x-50, y+200, 100, 100);
+      movieEvent(right);
+      image(right, x, y, 200, 200);
+      image(rightHeart, x, y+150, 200, 200);
       break;
     case 2:
+      movieEvent(down);
       imageMode(CENTER);
-      playDownIdle(x, y);
-      image(heart, x-200, y-50, 100, 100);
+      image(down, x, y, 200, 200);
+      image(downHeart, x-100, y + 50, 200, 200);
       break;
     case 3:
+      movieEvent(left);
       imageMode(CENTER);
-      playDownIdle(x, y);
-      image(heart, x+50, y-200, 100, 100);
+      image(left, x, y, 200, 200);
+      image(leftHeart, x, y-100, 200, 200);
       break;
     default:
       System.err.println("invalid Player adressed, check call of 'drawPlayer'");
@@ -108,18 +125,28 @@ public class View {
     }
   }
 
-  void drawUIElements() {
+  void drawUIElements(int[] hearts) {
     imageMode(CORNER);
-    image(camera, width * 2/3, 0, 640, 480);
+    image(camera, width - 640, 0, 640, 480);
     text("Spiel beenden", width * 5/6, height  * 5/6);
+    drawHearts(hearts);
   }
 
 
   void drawEndScreen() {
-    background(255,0,0);
+    background(255, 0, 0);
     text("game over", 500, 500);
     textSize(100);
   }
+
+
+  void drawHearts(int[] hearts) {
+    
+  }
+
+
+
+
 
   ///////////////////////////////////////////////////
   void videoTop(Movie idle, Movie jump) {
@@ -128,63 +155,9 @@ public class View {
       jump.read();
     }
   }
-
-  ////////////////////////////////load and play something via ImageSequence///////////////////////
-
-  PImage[] loadIdlePlayer(String path) {
-    PImage[] list = new PImage[56];
-    String file = path;
-    for (int i = 0; i < 56; i++) {
-      if (i < 10) {
-        file = path + "0" + i + ".png";
-      } else if (i >= 10) {
-        file = path + i + ".png";
-      }
-      list[i] = loadImage(file);
-    }
-    return list;
-  }
-
-
-
-
-  void playTopIdle(float x, float y) {
-    if (topIdleCounter < idleTop.length) {
-      image(idleTop[topIdleCounter], x, y, 200, 200 );
-      topIdleCounter++;
-      if (topIdleCounter ==idleTop.length) {
-        topIdleCounter = 0;
-      }
-    }
-  }
-
-
-  void playRightIdle(float x, float y) {
-    if (rightIdleCounter < idleRight.length) {
-      image(idleRight[rightIdleCounter], x, y, 200, 200);
-      rightIdleCounter++;
-      if (rightIdleCounter == idleRight.length) {
-        rightIdleCounter =0;
-      }
-    }
-  }
-  void playDownIdle(float x, float y) {
-    if (downIdleCounter < idleDown.length) {
-      image(idleDown[downIdleCounter], x, y, 200, 200);
-      downIdleCounter++;
-      if (downIdleCounter == idleDown.length) {
-        downIdleCounter =0;
-      }
-    }
-  }
-  void playLeftIdle(float x, float y) {
-    if (leftIdleCounter < idleLeft.length) {
-      image(idleLeft[leftIdleCounter], x, y, 200, 200);
-      leftIdleCounter++;
-      if (leftIdleCounter == idleLeft.length) {
-        leftIdleCounter =0;
-      }
+  void movieEvent(Movie m) {
+    if (m.available()) {
+      m.read();
     }
   }
 }
-/////////////////////////////////////////////////////////////////////////////////////////////

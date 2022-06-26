@@ -24,8 +24,8 @@ public class InGameLogic {
 
 
   /* TODO:
-   -dile/jump neu rendern vor gelben Hintergrund -> die als Movie abspielen !
-   -ggf playerHit() und playerHItLouie() noch in methoden mit switches auslagern -> performance
+   - jump movies integrieren
+   - Herzen anzeige unter Kamera, Herzen im Spiel
    */
   ////////////////logic stuff ///////////////////////////////
   boolean gameOver = false;
@@ -35,14 +35,17 @@ public class InGameLogic {
   boolean ignoreLeft = false;
   int playerCount;
 
+  boolean initiateDraw = true;
+
 
   // center of the picture, origin from where everthing gets calculated
   float originX = width / 3; //width / 2;
-  float originY = height / 2; //width /2;
+  float originY = height/ 2; //width /2;
   //////////Louie/////////////////
   Louie louie;
 
-  float louieRadius = 450;
+  float louieRadius = width / (12.14) + height / (5);
+ // float louieRadius = 450;
   float louieSpeed = 0.02; // speed of louies Movement [0.01 , doubled = 0.02]
   float hitDuration = 65 / 2; // duration in frames how long Louies Collision is set of or /2 if the speed is doubled !!!!!must be overwritten in louie, is not the case yet
 
@@ -72,7 +75,7 @@ public class InGameLogic {
   float[] rightBounds = { rightx - playerWidth, rightx, righty- playerHeight, righty};
   float[] downBounds = { downx, downx + playerWidth, downy - playerHeight, downy + playerHeight};
   float[] leftBounds ={leftx, leftx+playerWidth, lefty, lefty + playerHeight };
-  //float[][] allBounds = {topBounds,rightBounds,downBounds,leftBounds};
+
 
 
 
@@ -80,7 +83,7 @@ public class InGameLogic {
   int counter1 = 0;
   int counter2 = 0;
   int counter3 = 0;
-  int counter4=0;
+  int counter4 = 0;
   //////////////////////////////////////////////////
 
   View view; // a view to bound all visuals
@@ -103,6 +106,11 @@ Keep things clean, everything which i need and is not defined for setup() is sto
 Keep things clean, everything which i need and is not defined for void() is stored here
    */
   void myDraw() {
+    if (initiateDraw) { // fairplay = first two seconds louie cant hit a player
+      louie.indicator = true;
+      initiateDraw = false;
+    }
+
     if (!gameOver) {// while game is still running
       setGameOver();
       background(#ffb61e); // refresh the canvas every second
@@ -118,8 +126,9 @@ Keep things clean, everything which i need and is not defined for void() is stor
       text("LeftCones: " + left.cone.cones, 20, 180);
       louie.movement(); // updates louies position every frame
       ////////////////////////////////////////////////////////////////////
-      view.drawUIElements(); // draw ui elements
+          ui();
       notifyViewForPlayers(); // draw PLayers
+ 
       view.drawLouie(louie.xpos, louie.ypos); // draw louie (always in the same frame as louie.movement() !!
       /*
   text("top hits: " + counter1, 20, 40);
@@ -145,16 +154,16 @@ Keep things clean, everything which i need and is not defined for void() is stor
    
    */
   private int isPlayerHit() {
-    if (louie.xpos >= topx && louie.xpos <= topx+ 5 // the "hitbox" of the cones/hearts and if louies hitbox is on
-      &&louie.ypos >= topy && louie.ypos <= topy + 5 && !louie.indicator  ) {
+    if (louie.xpos >= topx && louie.xpos <= topx+ 10 // the "hitbox" of the cones/hearts and if louies hitbox is on
+      &&louie.ypos >= topy && louie.ypos <= topy + 10 && !louie.indicator  ) {
       return 0;
-    } else if (louie.xpos >= rightx -5 && louie.xpos <= rightx  &&
-      louie.ypos >= righty && louie.ypos <= righty + 2 && !louie.indicator ) {
+    } else if (louie.xpos >= rightx -10 && louie.xpos <= rightx  &&
+      louie.ypos >= righty && louie.ypos <= righty + 10 && !louie.indicator ) {
       return 1;
     } else if (louie.xpos >= downx-5 && louie.xpos <= downx  &&
       louie.ypos >= downy -5 &&  louie.ypos <= downy  && !louie.indicator ) {
       return 2;
-    } else if (louie.xpos >= leftx && louie.xpos <= leftx + 5 &&
+    } else if (louie.xpos >= leftx && louie.xpos <= leftx + 10 &&
       louie.ypos >= lefty  && louie.ypos <= lefty + 5 && !louie.indicator ) {
       return 3;
     }
@@ -176,7 +185,7 @@ Keep things clean, everything which i need and is not defined for void() is stor
     }
   }
 
-
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
   /*
  if a Player hits Louie return true
    is called in a specific order in draw()
@@ -212,7 +221,7 @@ Keep things clean, everything which i need and is not defined for void() is stor
       counter4++;
     }
   }
-
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   /*
 sets the gameOver state
@@ -257,5 +266,11 @@ clean up
     default:
       break;
     }
+  }
+
+  void ui() {
+
+    int[] hearts = {top.cone.cones, right.cone.cones, left.cone.cones, down.cone.cones};
+    view.drawUIElements(hearts);
   }
 }
