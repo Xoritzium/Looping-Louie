@@ -6,16 +6,17 @@ public class Player {
   float ypos;
   float defaultHeight; // defines how high the player must jump to trigger "hadJumped()"
   boolean coneHit; // unessescary?
-
+  char jumpKey;
   // maybe overingeneured
   Cone cone;
 
 
-  public Player(float xSpawn, float ySpawn, float defaultHeight) {
+  public Player(float xSpawn, float ySpawn, float defaultHeight, char jumpKey) {
     cone = new Cone();
     xpos = xSpawn;
     ypos = ySpawn;
     this.defaultHeight = defaultHeight;
+    this.jumpKey = jumpKey;
   }
   /*
   Contains the conditions if a Player had Jumped.
@@ -23,7 +24,7 @@ public class Player {
    */
   public boolean hadJumped() {
     if (keyPressed) {
-      if (key == 'q') {
+      if (key == jumpKey) {
         return true;
       }
     }

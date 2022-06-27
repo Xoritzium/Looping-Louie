@@ -27,10 +27,10 @@ void draw() {
 
     
     
-    if (counter < 46) {
+    if (counter < 55) {
       counter++;
-      image(jump, 0, 0);///////////////////////
-      image(s,0,0,100,100);
+      image(jump, 0, 0);/////////////////////// jump
+      image(s,0,0,100,100);// spritze
     } else {
       jumping = false;
       counter = 0;
@@ -39,7 +39,7 @@ void draw() {
     // jump = new Movie(this, "playerBlue-Jump.mp4");
     }
   } else {
-    image(idle, 0, 0);/////////////////////
+    image(idle, 0, 0);/////////////////////idle
     image(s,0,0,100,100);
    /// idle.loop();
  

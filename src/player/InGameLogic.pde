@@ -96,10 +96,10 @@ Keep things clean, everything which i need and is not defined for setup() is sto
   void mySetup(PApplet p) {
     /////////// initiate all instances //////////////
     louie = new Louie(louieRadius, louieSpeed, hitDuration, originX, originY);
-    top = new Player(topx, topy, 0);
-    right = new Player(rightx, righty, 0);
-    left = new Player(leftx, lefty, 0);
-    down = new Player(downx, downy, 0);
+    top = new Player(topx, topy, 0, 'w');
+    right = new Player(rightx, righty, 0, 'd');
+    left = new Player(leftx, lefty, 0,'a');
+    down = new Player(downx, downy, 0, 's');
     view = new View(p);
   }
   /*
@@ -158,7 +158,7 @@ Keep things clean, everything which i need and is not defined for void() is stor
       &&louie.ypos >= topy && louie.ypos <= topy + 10 && !louie.indicator  ) {
       return 0;
     } else if (louie.xpos >= rightx -10 && louie.xpos <= rightx  &&
-      louie.ypos >= righty && louie.ypos <= righty + 10 && !louie.indicator ) {
+      louie.ypos >= righty && louie.ypos <= righty + 5 && !louie.indicator ) {
       return 1;
     } else if (louie.xpos >= downx-5 && louie.xpos <= downx  &&
       louie.ypos >= downy -5 &&  louie.ypos <= downy  && !louie.indicator ) {
@@ -202,6 +202,7 @@ Keep things clean, everything which i need and is not defined for void() is stor
     return false;
   }
 
+  
 
   /**
    Logic for the confirmation a player hit Louie
@@ -247,21 +248,31 @@ clean up
     switch(playerCount) {
     case 1:
       view.drawPlayer(top.xpos, top.ypos, 0);
+      view.topJumps(top.hadJumped());
       break;
     case 2:
       view.drawPlayer(top.xpos, top.ypos, 0);
       view.drawPlayer(down.xpos, down.ypos, 2);
+      view.topJumps(top.hadJumped());
+      view.downJumps(right.hadJumped());
       break;
     case 3:
       view.drawPlayer(top.xpos, top.ypos, 0);
       view.drawPlayer(right.xpos, right.ypos, 1);
       view.drawPlayer(down.xpos, down.ypos, 2);
+       view.topJumps(top.hadJumped());
+      view.rightJumps(right.hadJumped());
+      view.downJumps(down.hadJumped());
       break;
     case 4:
       view.drawPlayer(top.xpos, top.ypos, 0);
       view.drawPlayer(right.xpos, right.ypos, 1);
       view.drawPlayer(down.xpos, down.ypos, 2);
       view.drawPlayer(left.xpos, left.ypos, 3);
+        view.topJumps(top.hadJumped());
+      view.rightJumps(right.hadJumped());
+      view.downJumps(down.hadJumped());
+      view.leftJumps(left.hadJumped());
       break;
     default:
       break;
@@ -269,8 +280,7 @@ clean up
   }
 
   void ui() {
-
-    int[] hearts = {top.cone.cones, right.cone.cones, left.cone.cones, down.cone.cones};
-    view.drawUIElements(hearts);
+     int[] hearts = {top.cone.cones, right.cone.cones, down.cone.cones, left.cone.cones}; 
+    view.drawUIElements(hearts, playerCount);
   }
 }
