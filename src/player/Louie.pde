@@ -16,6 +16,7 @@ public class Louie { //<>//
   float tempRadius;
   float indicatorCounter = 0;
   float actualRadius; // the slow de-/increasing radius to make a smooth transition to louies flight after he took a hit
+  int delay = 0;
 
   float angleMultiplier = 1;
   float angle = 0; // counter to ensure louies movement
@@ -23,7 +24,7 @@ public class Louie { //<>//
 
 
 
-  public Louie(float radius, float speed, float cON, float xmiddle,float ymiddle) {
+  public Louie(float radius, float speed, float cON, float xmiddle, float ymiddle) {
     this.radius = radius;
     this.speed = speed;
     this.speed2 = speed;
@@ -52,6 +53,7 @@ public class Louie { //<>//
   private float gotHit() {
 
     if (indicator) { // running collision of
+
 
       if (indicatorCounter < collisionOn) {
         indicatorCounter++;

@@ -7,10 +7,9 @@ this is not the final view, its just for dev
  */
 public class View {
 
-  PImage heart;//optional !
   //Gif louie;
   PImage louie;
-
+  LouieAnimation louieAnim;
   ///////////////////////top
   int topIdleCounter = 0;
   Movie top;
@@ -37,7 +36,7 @@ public class View {
   boolean leftJumping;
 
   PImage[] allHearts = new PImage[4];
-  int jumpLength = 55;
+  int jumpLength = 44;
 
 
   //  Movie idleLouie;
@@ -48,6 +47,7 @@ public class View {
   public View(PApplet p) {
     camera = loadImage("tempCam.jpg");
 
+    louieAnim = new LouieAnimation();
     ///////hearts ////////
     topHeart = loadImage("\\hearts\\heart-blue.png");
     rightHeart = loadImage("\\hearts\\heart-yellow.png");
@@ -81,7 +81,7 @@ public class View {
 
 
   void drawLouie( float x, float y) {
-    image(louie, x, y, 200, 200);
+    image(louie, x,y, 200,200);
   }
 
   /*
@@ -200,7 +200,6 @@ public class View {
     if (j) {
       topJump.jump(0);
       topJump.play();
-      top.stop();
       topJumping = true;
       topIdleCounter = 0;
     }
@@ -228,7 +227,6 @@ public class View {
     if (j) {
       rightJump.jump(0);
       rightJump.play();
-      right.stop();
       rightJumping = true;
       topIdleCounter = 0;
     }
@@ -256,7 +254,6 @@ public class View {
     if (j) {
       downJump.jump(0);
       downJump.play();
-      down.stop();
       downJumping = true;
       downIdleCounter = 0;
     }
@@ -284,7 +281,6 @@ public class View {
     if (j) {
       leftJump.jump(0);
       leftJump.play();
-      left.stop();
       leftJumping = true;
       leftIdleCounter = 0;
     }
