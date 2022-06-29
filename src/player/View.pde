@@ -1,5 +1,6 @@
 //<>// //<>// //<>// //<>// //<>// //<>// //<>//
 import processing.video.*;
+import controlP5.*;
 
 //-> rgb: 300,182,30 = ffb61e // background
 
@@ -41,6 +42,10 @@ public class View {
 
   PImage camera; // temporary vision of the camera
 
+  ControlP5 cp5;
+  Button backToMainMenu;
+  PFont buttonTextFont;
+
   /**
    initiate view
    @param p PApplet is the main class where setup and draw is called
@@ -75,6 +80,20 @@ public class View {
     rightJump = new Movie(p, "\\Player-Jump\\player-yellow-jump.mp4");
     downJump = new Movie(p, "\\Player-Jump\\player-red-jump.mp4");
     leftJump = new Movie(p, "\\Player-Jump\\player-green-jump.mp4");
+
+
+
+    //new button
+    cp5 = new ControlP5(p );
+    buttonTextFont = createFont("Thonburi-Bold", 20, true); // use true/false for smooth/no-smooth
+    
+    backToMainMenu = cp5.addButton("back to main !")
+      .setPosition(width * 5/6, height * 5/6)
+      .setSize(150, 100)
+      .setColorBackground(color(240, 30, 0))
+      .setColorForeground(color(140, 225, 10))
+      .setColorActive(color(40, 255, 40))
+      .show();
   }
 
   /**
@@ -166,7 +185,10 @@ public class View {
     text("game over", 300, 500);
     text("winner is: ", 300, 600);
     textSize(18);
-    text("zurück zum Hauptmenu", width * 5/6, height* 5/6);
+    backToMainMenu
+    .setPosition(width / 2 - 150, height * 5/6)
+    .setColorBackground(color(#ffb61e))
+    .show();
   }
 
   /**

@@ -82,9 +82,14 @@ public class InGameLogic {
 
 
   View view; // a view to bound all visuals
-  /*
-Keep things clean, everything which i need and is not defined for setup() is stored here
-   */
+  
+  Button backToMainMenu;
+  
+  
+  
+  
+  
+
   /**
    @param p needed ViewCanvas to transfer it to the View ! -> its the main class, to be called in setup() method
    */
@@ -101,6 +106,7 @@ Keep things clean, everything which i need and is not defined for setup() is sto
 Keep things clean, everything i need and is not defined for draw() is stored here
    */
   void drawInGame() {
+
     if (initiateDraw) { // fairplay = first two seconds louie cant hit a player
       louie.indicator = true;
       initiateDraw = false;
@@ -124,7 +130,6 @@ Keep things clean, everything i need and is not defined for draw() is stored her
       gameOver(winner);
     }
   }
-
 
 
 
@@ -274,4 +279,11 @@ clean up
     int[] hearts = {top.cone.cones, right.cone.cones, down.cone.cones, left.cone.cones};
     view.drawUIElements(hearts, playerCount);
   }
+  
+
+  
+  
+  
+  
+  
 }
