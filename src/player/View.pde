@@ -1,21 +1,21 @@
-//<>// //<>// //<>// //<>// //<>// //<>//
+//<>// //<>// //<>// //<>// //<>// //<>// //<>//
 import processing.video.*;
 
-//-> rgb: 300,182,30 = ffb61e
-/*
-this is not the final view, its just for dev
+//-> rgb: 300,182,30 = ffb61e // background
+
+/**
+ View which draws the game onto the screen
  */
 public class View {
 
-  //Gif louie;
+  //PNG louie;
   PImage louie;
-  LouieAnimation louieAnim;
   ///////////////////////top
-  int topIdleCounter = 0;
-  Movie top;
-  Movie topJump;
-  PImage topHeart;
-  boolean topJumping;
+  int topIdleCounter = 0; // counter for the jumo animation
+  Movie top; // idle animation
+  Movie topJump; // jump animation
+  PImage topHeart; // heart of top player
+  boolean topJumping; // control if top is jumping or not
   //////////////////// right
   int rightIdleCounter = 0;
   Movie right;
@@ -35,25 +35,24 @@ public class View {
   PImage leftHeart;
   boolean leftJumping;
 
-  PImage[] allHearts = new PImage[4];
-  int jumpLength = 44;
+  PImage[] allHearts = new PImage[4]; // storing all hearts
+  int jumpLength = 44; // length of a jump animation in frames
 
 
-  //  Movie idleLouie;
-  int counterTop =0;
-  boolean jumpedTop = false;
-  PImage camera;
+  PImage camera; // temporary vision of the camera
 
+  /**
+   initiate view
+   @param p PApplet is the main class where setup and draw is called
+   */
   public View(PApplet p) {
     camera = loadImage("tempCam.jpg");
 
-    louieAnim = new LouieAnimation();
     ///////hearts ////////
     topHeart = loadImage("\\hearts\\heart-blue.png");
     rightHeart = loadImage("\\hearts\\heart-yellow.png");
     downHeart = loadImage("\\hearts\\heart-red.png");
     leftHeart = loadImage("\\hearts\\heart-green.png");
-
     allHearts[0] = topHeart;
     allHearts[1] = rightHeart;
     allHearts[2] = downHeart;
@@ -78,33 +77,33 @@ public class View {
     leftJump = new Movie(p, "\\Player-Jump\\player-green-jump.mp4");
   }
 
-
-
+  /**
+   draw louie onto th canvas
+   @param x = x position
+   @param y = y position
+   */
   void drawLouie( float x, float y) {
-    image(louie, x,y, 200,200);
+    image(louie, x, y, 200, 200);
   }
 
-  /*
+  /* draw the players onto the canvas
    0=top
    1=right
    2=down
    3=left
+   @param x = x position
+   @param y = y position
+   @param which = the player to be drawn
    */
   void drawPlayer(float x, float y, int which) {
 
     switch(which) {
     case 0:
-      /*   if(top.available()){
-       top.read();
-       }
-       */
       movieEvent(top);
       imageMode(CENTER);
-      //image(top, x, y, 200, 200);
       idleVSJumpTop(top, topJump, x, y);
       image(topHeart, x+100, y+50, 200, 200);
       break;
-
 
     case 1:
       imageMode(CENTER);
@@ -129,7 +128,11 @@ public class View {
       break;
     }
   }
-
+  /**
+   draw the uiElemtns onto the canvas
+   @param hearts = array of the hearts
+   @param players = amount of players
+   */
   void drawUIElements(int[] hearts, int players) {
     imageMode(CORNER);
     image(camera, width - 640, 0, 640, 480);
@@ -137,14 +140,38 @@ public class View {
     drawHearts(hearts, players);
   }
 
-
-  void drawEndScreen() {
+  /**
+   draw the endScreen after the game ends and show the winner
+   */
+  void drawEndScreen(int winner) {
     background(255, 0, 0);
-    text("game over", 500, 500);
+    imageMode(CENTER);
+    switch(winner) {
+    case 0:
+      image(topHeart, width / 2, height/2, 400, 400);
+      break;
+    case 1:
+      image(rightHeart, width / 2, height/2, 400, 400);
+      break;
+    case 2:
+      image(downHeart, width / 2, height/2, 400, 400);
+      break;
+    case 3:
+      image(leftHeart, width / 2, height/2, 400, 400);
+      break;
+    default:
+      break;
+    }
     textSize(100);
+    text("game over", 300, 500);
+    text("winner is: ", 300, 600);
+    textSize(18);
+    text("zurück zum Hauptmenu", width * 5/6, height* 5/6);
   }
 
-
+  /**
+   draw the hearts of the UI onto the canvas
+   */
   void drawHearts(int[] hearts, int players) {
     float x = width - 640;
     float y = 480;
@@ -161,7 +188,6 @@ public class View {
         y += heartSize * 1/2;
       }
 
-
       x += heartSize;
       y = 480;
     }
@@ -172,16 +198,30 @@ public class View {
 
 
   ///////////////////////////////////////////////////
+  /**
+   prepair the next frame of the movie to be shown
+   @param m = the movie from where the next frame should be taken
+   */
   void movieEvent(Movie m) {
     if (m.available()) {
       m.read();
     }
   }
+  ////////////////////////////////////////////////////
+  /** every Player can swap between two animations, the idle animation and the jump animation
+   here this will be controlled.
+   the "...Jumps(boolean) method is called whenever a player should jump)
+   idleVSJump() params:
+   @param idle = each idle Animation of a player
+   @param jump = each jump animation of a player
+   @param x = x position to be drawn
+   @param y = y position to be drawn
+   */
+  /////////////////////////////////////////////////////////
 
 
   void idleVSJumpTop(Movie idle, Movie jump, float x, float y) {
     if (topJumping) {
-
       if (topIdleCounter < jumpLength) {
         topIdleCounter++;
         movieEvent(jump);
@@ -196,6 +236,7 @@ public class View {
       image(idle, x, y, 200, 200);
     }
   }
+
   void topJumps(boolean j) {
     if (j) {
       topJump.jump(0);

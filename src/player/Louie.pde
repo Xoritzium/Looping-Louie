@@ -23,7 +23,9 @@ public class Louie { //<>//
 
 
 
-
+  /**
+   *instanciate Louie
+   */
   public Louie(float radius, float speed, float cON, float xmiddle, float ymiddle) {
     this.radius = radius;
     this.speed = speed;
@@ -49,12 +51,11 @@ public class Louie { //<>//
     angle =angle + speed; // handles the speed of the rotation
   }
 
-
+  /* manipulating louies radius and speed if he got a hit
+   */
   private float gotHit() {
 
     if (indicator) { // running collision of
-
-
       if (indicatorCounter < collisionOn) {
         indicatorCounter++;
         speed = tempSpeed;
@@ -67,5 +68,5 @@ public class Louie { //<>//
     } else {
       return radius;
     }
-  } // 3 methods: 1= who controlls the collision 2 =changes the speed 3= changes the radius
+  }
 }

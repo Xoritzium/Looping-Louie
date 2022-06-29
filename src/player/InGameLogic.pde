@@ -1,6 +1,8 @@
 // stores the needed inGameLogic //<>// //<>//
 public class InGameLogic {
-  // create the Logic
+  /** create the Logic
+   @param playerCount = amount of players
+   */
   public InGameLogic(int playerCount) {
     this.playerCount = playerCount;
     switch(playerCount) {
@@ -24,18 +26,20 @@ public class InGameLogic {
 
 
   /* TODO:
-   - jump movies integrieren
-   - Herzen anzeige unter Kamera, Herzen im Spiel
+   - spiel beenden und zurück zum Mainmenue gehen knöpfe integrieren
+   - kommentieren
+   -zusammenbauen
    */
   ////////////////logic stuff ///////////////////////////////
-  boolean gameOver = false;
-  boolean ignoreTop = false;
+  boolean gameOver = false; // defining the end of the game
+  boolean ignoreTop = false;//wich logic should be ignored, in case there are less than four players @playersCount
   boolean ignoreRight = false;
   boolean ignoreDown = false;
   boolean ignoreLeft = false;
   int playerCount;
-
+  //first seconds noone can be hit
   boolean initiateDraw = true;
+  int winner = -1; //defining the winner
 
 
   // center of the picture, origin from where everthing gets calculated
@@ -44,10 +48,10 @@ public class InGameLogic {
   //////////Louie/////////////////
   Louie louie;
 
-  float louieRadius = width / (12.14) + height / (5);
- // float louieRadius = 450;
+  float louieRadius = width / (12.14) + height / (5); // radius, depending on the window
+  // float louieRadius = 450;
   float louieSpeed = 0.02; // speed of louies Movement [0.01 , doubled = 0.02]
-  float hitDuration = 65 / 2; // duration in frames how long Louies Collision is set of or /2 if the speed is doubled !!!!!must be overwritten in louie, is not the case yet
+  float hitDuration = 65 / 2; // duration in frames how long Louies Collision is set of or /2  if the speed is doubled !!!!!must be overwritten in louie, is not the case yet
 
 
   ///////////////////// Koordinates and Hitboxes from the players ////////////////
@@ -70,42 +74,33 @@ public class InGameLogic {
   float lefty = originY;
   // hitboxes
   //each Player has a Hitbox of a 200x200 box
-  // not perfectly balance = right has a frame less time to manipulate louie
+  // not perfectly balance = right has a frame less time to manipulate louie  -> @note = the seems to be unnoticed
   float[] topBounds = {topx - playerWidth, topx, topy, topy + playerHeight};
   float[] rightBounds = { rightx - playerWidth, rightx, righty- playerHeight, righty};
   float[] downBounds = { downx, downx + playerWidth, downy - playerHeight, downy + playerHeight};
   float[] leftBounds ={leftx, leftx+playerWidth, lefty, lefty + playerHeight };
 
 
-
-
-  ////////////////// temporary//////////////////////
-  int counter1 = 0;
-  int counter2 = 0;
-  int counter3 = 0;
-  int counter4 = 0;
-  //////////////////////////////////////////////////
-
   View view; // a view to bound all visuals
   /*
 Keep things clean, everything which i need and is not defined for setup() is stored here
    */
   /**
-   @param p needed ViewCanvas to transfer it to the View !
+   @param p needed ViewCanvas to transfer it to the View ! -> its the main class, to be called in setup() method
    */
-  void mySetup(PApplet p) {
+  void inGameLogicSetup(PApplet p) {
     /////////// initiate all instances //////////////
     louie = new Louie(louieRadius, louieSpeed, hitDuration, originX, originY);
     top = new Player(topx, topy, 0, 'w');
     right = new Player(rightx, righty, 0, 'd');
-    left = new Player(leftx, lefty, 0,'a');
+    left = new Player(leftx, lefty, 0, 'a');
     down = new Player(downx, downy, 0, 's');
     view = new View(p);
   }
   /*
-Keep things clean, everything which i need and is not defined for void() is stored here
+Keep things clean, everything i need and is not defined for draw() is stored here
    */
-  void myDraw() {
+  void drawInGame() {
     if (initiateDraw) { // fairplay = first two seconds louie cant hit a player
       louie.indicator = true;
       initiateDraw = false;
@@ -120,38 +115,26 @@ Keep things clean, everything which i need and is not defined for void() is stor
       ////////////////////////// Louie hits a players cone////////////////
       louieHitPlayer();
       ////////////////////////////////////////////////////////////////////
-      text("TopCones: " + top.cone.cones, 20, 120);
-      text("RightCones: " + right.cone.cones, 20, 140);
-      text("DownCones: " + down.cone.cones, 20, 160);
-      text("LeftCones: " + left.cone.cones, 20, 180);
-      louie.movement(); // updates louies position every frame
-      ////////////////////////////////////////////////////////////////////
-          ui();
+      ui();
       notifyViewForPlayers(); // draw PLayers
- 
+
       view.drawLouie(louie.xpos, louie.ypos); // draw louie (always in the same frame as louie.movement() !!
-      /*
-  text("top hits: " + counter1, 20, 40);
-       text("right hits: " + counter2, 20, 60);
-       text("down hits: " + counter3, 20, 80);
-       text("left hits: " + counter4, 20, 100);
-       */
+      louie.movement();
     } else {
-      gameOver();
+      gameOver(winner);
     }
   }
 
 
 
 
-  /* returns wheter louie hitted a
+  /* returns whether louie hitted a player or not
    @return :
    -1: no playerHit
    0: top hit
    1: right hit
    2: down hit
    3: left
-   
    */
   private int isPlayerHit() {
     if (louie.xpos >= topx && louie.xpos <= topx+ 10 // the "hitbox" of the cones/hearts and if louies hitbox is on
@@ -171,17 +154,17 @@ Keep things clean, everything which i need and is not defined for void() is stor
   }
 
 
-  // logic for confirmation Luie hit a player
+  // logic for confirmation Louie hit a player
   void louieHitPlayer() {
     int hit = isPlayerHit();
     if (hit ==0 && !ignoreTop) {
-      top.cone.cones--;
+      top.decreaseCones();
     } else if (hit ==1 && !ignoreRight) {
-      right.cone.cones--;
+      right.decreaseCones();
     } else if (hit==2 && !ignoreDown) {
-      down.cone.cones--;
+      down.decreaseCones();
     } else if (hit ==3 && !ignoreLeft) {
-      left.cone.cones--;
+      left.decreaseCones();
     }
   }
 
@@ -202,7 +185,7 @@ Keep things clean, everything which i need and is not defined for void() is stor
     return false;
   }
 
-  
+
 
   /**
    Logic for the confirmation a player hit Louie
@@ -210,16 +193,12 @@ Keep things clean, everything which i need and is not defined for void() is stor
   void playerHitLouie() {
     if  (checkPlayerHitLouie(louie.xpos, louie.ypos, top, topBounds) && !ignoreTop) { // top
       louie.indicator = true; // set collision off
-      counter1++;
     } else if  (checkPlayerHitLouie(louie.xpos, louie.ypos, right, rightBounds) && !ignoreRight) { // right
       louie.indicator = true; // set collision off
-      counter2++;
     } else if  (checkPlayerHitLouie(louie.xpos, louie.ypos, down, downBounds) && !ignoreDown) { // down
       louie.indicator = true; // set collision off
-      counter3++;
     } else  if  (checkPlayerHitLouie(louie.xpos, louie.ypos, left, leftBounds) && !ignoreLeft) { // left
       louie.indicator = true; // set collision off
-      counter4++;
     }
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -227,18 +206,28 @@ Keep things clean, everything which i need and is not defined for void() is stor
   /*
 sets the gameOver state
    */
-  private void setGameOver() {
-    if (top.cone.cones ==0 || right.cone.cones ==0 ||down.cone.cones ==0 || left.cone.cones ==0) {
-      gameOver = true;
-    }
+  private void setGameOver() { 
+    if(top.cone.cones == 0 && right.cone.cones == 0 && down.cone.cones == 0 && left.cone.cones > 0){
+      winner = 3;
+      gameOver =true;
+   }else if(top.cone.cones == 0 && right.cone.cones == 0 && down.cone.cones > 0 && left.cone.cones  == 0){
+     winner = 2;
+      gameOver =true;
+   }else if(top.cone.cones == 0 && right.cone.cones > 0 && down.cone.cones == 0 && left.cone.cones  == 0){
+     winner = 1;
+      gameOver =true;
+   }else if(top.cone.cones > 0 && right.cone.cones == 0 && down.cone.cones == 0 && left.cone.cones  == 0){
+     winner = 0;
+      gameOver =true;
+   }
   }
 
   /*
 clean up
    return to main menu ?
    */
-  private void gameOver() {
-    view.drawEndScreen();
+  private void gameOver(int winner) { //<>//
+    view.drawEndScreen(winner);
   }
 
   /**
@@ -260,7 +249,7 @@ clean up
       view.drawPlayer(top.xpos, top.ypos, 0);
       view.drawPlayer(right.xpos, right.ypos, 1);
       view.drawPlayer(down.xpos, down.ypos, 2);
-       view.topJumps(top.hadJumped());
+      view.topJumps(top.hadJumped());
       view.rightJumps(right.hadJumped());
       view.downJumps(down.hadJumped());
       break;
@@ -269,7 +258,7 @@ clean up
       view.drawPlayer(right.xpos, right.ypos, 1);
       view.drawPlayer(down.xpos, down.ypos, 2);
       view.drawPlayer(left.xpos, left.ypos, 3);
-        view.topJumps(top.hadJumped());
+      view.topJumps(top.hadJumped());
       view.rightJumps(right.hadJumped());
       view.downJumps(down.hadJumped());
       view.leftJumps(left.hadJumped());
@@ -278,9 +267,11 @@ clean up
       break;
     }
   }
-
+/*
+  logic for the ui-elements: the hearts and the back to menue button
+*/
   void ui() {
-     int[] hearts = {top.cone.cones, right.cone.cones, down.cone.cones, left.cone.cones}; 
+    int[] hearts = {top.cone.cones, right.cone.cones, down.cone.cones, left.cone.cones};
     view.drawUIElements(hearts, playerCount);
   }
 }
