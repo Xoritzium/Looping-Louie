@@ -35,4 +35,14 @@ void setupScreenTwo() {
     .setFont(font)
     .setColorForeground(color(220, 220, 220))
     .setColorActive(color(220, 220, 220));
+    
+    
+      startGameButton = cp5.addButton("START GAME")
+    .setPosition(width * 1/3 - 150, height * 2/3)
+    .setSize(150, 100)
+    .setColorBackground(color(240, 30, 0))
+    .setFont(font)
+    .setColorForeground(color(140, 225, 10))
+    .setColorActive(color(40, 255, 40));
+    
 }

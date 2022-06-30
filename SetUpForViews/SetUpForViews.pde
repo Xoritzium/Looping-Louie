@@ -1,5 +1,19 @@
+
+
+/**
+ TODO -> amountOfPlayer setzen
+ -> camera logic 
+ -> setup loose for less then 4 player !
+ */
 import controlP5.*;
 import processing.video.*;
+
+/**state:
+ 0 = startScreen + setupCamera
+ 1 = inGame + gameOver-screen
+ */
+int state = 0;
+
 
 //ScreenOne
 Movie louieExampleMovie;
@@ -17,23 +31,45 @@ Movie KopfFueslerMovie;
 Textarea headerTextarea;
 Textarea bodyTextarea;
 Button backToStartButton;
+Button startGameButton;
+
+//ScreenThree / mainGame
+InGameLogic igl;
+Button backToMainMenu;
+int amountOfPlayers = 1;
+
+//Camera stuff
+
 
 void setup() {
   fullScreen(); //geeinigt, dass ganzes Programm in fullscreen laufen soll
   // -> automatisch auf bildschirm des Users angepasst
   frameRate(30);
   setupScreenOne();
+  // screenThree setup
+  igl = new InGameLogic(amountOfPlayers);
+  camSetup(); ////////////////////////////////////////////////////////////////////////////////
+  
 }
 
 void draw() {
-  background(300, 182, 30);
-  drawScreenOne();
-  drawLittleLouieTurning();
+
+  switch(state) {
+  case 0:
+    background(300, 182, 30);
+    drawScreenOne();
+    drawLittleLouieTurning();
+    break;
+  case 1:
+    igl.drawInGame();
+    break;
+  }
 }
 
 void controlEvent(ControlEvent theControlEvent) {
   if (theControlEvent.isFrom(numberOfPlayersList)) {
     //TODO hier Anzahl = playerNumber als Variable in Logik merken -> TOM
+    //-> aufruf von igl.setPlayerAmount(amountOfPlayers);
   }
 
   if (theControlEvent.isFrom(startButton)) {
@@ -61,10 +97,12 @@ void controlEvent(ControlEvent theControlEvent) {
     bodyTextarea.hide();
     headerTextarea.hide();
     backToStartButton.hide();
+    startGameButton.hide();
 
     startButton.show();
     numberOfPlayersList.show();
     gameDescription.show();
+    logo.show();
     //--movie was disposed before -> initialize newly
     louieExampleMovie = new Movie(this, "Mein Film.mp4");
     image(louieExampleMovie, width/11, height/3.5, 550, (550/16)*11);
@@ -72,6 +110,36 @@ void controlEvent(ControlEvent theControlEvent) {
 
     KopfFueslerMovie.stop();
     KopfFueslerMovie.dispose();
+  }
+
+  if (theControlEvent.isFrom(startGameButton)) {
+    bodyTextarea.hide();
+    headerTextarea.hide();
+    backToStartButton.hide();
+    startGameButton.hide();
+    logo.hide();
+
+    KopfFueslerMovie.stop();
+    KopfFueslerMovie.dispose();
+
+
+    igl.inGameLogicSetup(this);
+    state = 1; // start game
+  }
+
+  if (theControlEvent.isFrom(backToMainMenu)) {
+    backToMainMenu.hide();
+    igl = new InGameLogic(amountOfPlayers);
+
+    startButton.show();
+    numberOfPlayersList.show();
+    gameDescription.show();
+    logo.show();
+    //--movie was disposed before -> initialize newly
+    louieExampleMovie = new Movie(this, "Mein Film.mp4");
+    image(louieExampleMovie, width/11, height/3.5, 550, (550/16)*11);
+    louieExampleMovie.loop();
+    state = 0;
   }
 }
 

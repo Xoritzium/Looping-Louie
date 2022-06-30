@@ -76,6 +76,7 @@ void customize(DropdownList ddl) {
 
 void drawScreenOne() {
   background(300, 182, 30);
+  imageMode(CORNER);
   image(louieExampleMovie, width/11, height/3.5, 550, (550/16)*11);
   image(KopfFueslerMovie, width/4 * 2.3, height/4 * 1.25, 470, 480);
 }

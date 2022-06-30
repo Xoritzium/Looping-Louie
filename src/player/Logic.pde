@@ -16,10 +16,3 @@ void setup() {
 void draw() {
   igl.drawInGame();
 }
-
-//TODO-> bei Sophia eingliedern
-void controlEvent(ControlEvent event) {
-  if (event.isFrom(backToMainMenu)) {
-    //TODO -> setup von Screen: LoopingLouieStart
-  }
-}
