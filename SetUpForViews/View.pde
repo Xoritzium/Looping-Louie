@@ -53,8 +53,8 @@ public class View {
     camera = loadImage("tempCam.jpg");
 
     ///////hearts ////////
-    topHeart = loadImage("\\hearts\\heart-blue.png");
-    rightHeart = loadImage("\\hearts\\heart-yellow.png");
+    topHeart = loadImage("\\hearts\\heart-yellow.png");
+    rightHeart = loadImage("\\hearts\\heart-blue.png");
     downHeart = loadImage("\\hearts\\heart-red.png");
     leftHeart = loadImage("\\hearts\\heart-green.png");
     allHearts[0] = topHeart;
@@ -65,18 +65,18 @@ public class View {
 
     louie = loadImage("louie-static.png");
 
-    top = new Movie(p, "\\Player-idle\\player-blue-idle.mp4");
+    top = new Movie(p, "\\Player-idle\\player-yellow-idle.mp4");
     top.loop();
     /////load Players
-    right = new Movie(p, "\\Player-idle\\player-yellow-idle.mp4");
+    right = new Movie(p, "\\Player-idle\\player-blue-idle.mp4");
     right.loop();
     down = new Movie(p, "\\Player-idle\\player-red-idle.mp4");
     down.loop();
     left = new Movie(p, "\\Player-idle\\player-green-idle.mp4");
     left.loop();
 
-    topJump = new Movie(p, "\\Player-Jump\\player-blue-jump.mp4");
-    rightJump = new Movie(p, "\\Player-Jump\\player-yellow-jump.mp4");
+    topJump = new Movie(p, "\\Player-Jump\\player-yellow-jump.mp4");
+    rightJump = new Movie(p, "\\Player-Jump\\player-blue-jump.mp4");
     downJump = new Movie(p, "\\Player-Jump\\player-red-jump.mp4");
     leftJump = new Movie(p, "\\Player-Jump\\player-green-jump.mp4");
 
@@ -85,9 +85,9 @@ public class View {
     //new button
     cp5 = new ControlP5(p);
     buttonTextFont = createFont("Thonburi-Bold", 20, true); // use true/false for smooth/no-smooth
-    
-      backToMainMenu = cp5.addButton("BACK TO MAIN")
-      .setPosition(width * 5/6, height * 5/6)
+
+    backToMainMenu = cp5.addButton("BACK TO MAIN")
+      .setPosition(0, height - 100)
       .setSize(150, 100)
       .setColorBackground(color(240, 30, 0))
       .setColorForeground(color(140, 225, 10))
@@ -184,16 +184,16 @@ public class View {
     text("winner is: ", 300, 600);
     textSize(18);
     backToMainMenu
-    .setPosition(width / 2 - 150, height * 5/6)
-    .setColorBackground(color(#ffb61e))
-    .show();
+      .setPosition(width / 2 - 150, height * 5/6)
+      .setColorBackground(color(#ffb61e))
+      .show();
   }
 
   /**
    draw the hearts of the UI onto the canvas
    */
   void drawHearts(int[] hearts, int players) {
-    float x = width - 640;
+    float x = 0;
     float y = 480;
     float heartSize = 640/players;
     if (players == 1) {

@@ -7,10 +7,10 @@
   
   void setupP1Yellow(){
     int adjustHeightP1 = 50;
-    scanFieldP1 = cam.get(0, ((height/4)/2)+adjustHeightP1, width/4, (height/4)/2);
+    scanFieldP1 = cam.get(0, ((480/4)/2)+adjustHeightP1, 640/4, (480/4)/2);
     stroke(255, 255, 0);
     fill(0, 0);
-    rect(0, ((height/4)/2)+adjustHeightP1, width/4, (height/4)/2);
+    rect(0, ((480/4)/2)+adjustHeightP1, (640/4), (480/4)/2);
   }
 
   boolean isYellow(){
@@ -43,7 +43,7 @@
   }
   
    boolean ifYellowPixel(float value){ //if color hue is found
-      if(value > 43 && value < 55){ //manuell
+      if(value > 43 && value < 54){ //manuell
         return true;
       }
   return false;
@@ -53,7 +53,7 @@
   
   
   boolean ifEnoughYellow(int counter){ //check for amount of color appearence
-    int minimumAmount = 40;
+    int minimumAmount = 50;
       if(counter > minimumAmount){
         return true;  
       }

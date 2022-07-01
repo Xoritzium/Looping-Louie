@@ -20,7 +20,7 @@
       
       // The camera can be initialized directly using an 
       // element from the array returned by list():
-      cam = new Capture(this, cameras[0]);
+      cam = new Capture(this, cameras[1]);
       cam.start();     
     }
  }
@@ -35,4 +35,5 @@
     cam.read();
     }
   image(cam, -62, 0,  762, 480); //weired tech, weired values :) (-62, 0,  762, 480)
+  
   }

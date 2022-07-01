@@ -37,7 +37,7 @@ void counter(){
     colorInputAdjustmentP2.loadPixels();
     float totalSum = 0;
       for (int i = 0; i < colorAutoAdjustmentArraySize; i++) {
-        color c = colorInputAdjustmentP1.pixels[i];
+        color c = colorInputAdjustmentP2.pixels[i];
          float tmp = hue(c);
          totalSum=totalSum+tmp; 
       }
@@ -51,7 +51,7 @@ void counter(){
     colorInputAdjustmentP3.loadPixels();
     float totalSum = 0;
       for (int i = 0; i < colorAutoAdjustmentArraySize; i++) {
-        color c = colorInputAdjustmentP1.pixels[i];
+        color c = colorInputAdjustmentP3.pixels[i];
          float tmp = hue(c);
          totalSum=totalSum+tmp; 
       }
@@ -64,7 +64,7 @@ void counter(){
     colorInputAdjustmentP4.loadPixels();
     float totalSum = 0;
       for (int i = 0; i < colorAutoAdjustmentArraySize; i++) {
-        color c = colorInputAdjustmentP1.pixels[i];
+        color c = colorInputAdjustmentP4.pixels[i];
          float tmp = hue(c);
          totalSum=totalSum+tmp; 
       }

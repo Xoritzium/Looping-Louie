@@ -48,7 +48,7 @@
 
   
   boolean ifEnoughBlue(int counter){ //check for amount of color appearence
-  int minimumAmount = 20;
+  int minimumAmount = 50;
     if(counter > minimumAmount){
       return true;  
       }

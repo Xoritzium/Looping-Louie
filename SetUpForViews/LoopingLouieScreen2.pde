@@ -38,7 +38,7 @@ void setupScreenTwo() {
     
     
       startGameButton = cp5.addButton("START GAME")
-    .setPosition(width * 1/3 - 150, height * 2/3)
+    .setPosition(0,0)
     .setSize(150, 100)
     .setColorBackground(color(240, 30, 0))
     .setFont(font)

@@ -9,9 +9,9 @@ public class Player {
   // maybe overingeneured
   Cone cone;
 
-/**
-instanciate the players
-*/
+  /**
+   instanciate the players
+   */
   public Player(float xSpawn, float ySpawn, float defaultHeight, char jumpKey) {
     cone = new Cone();
     xpos = xSpawn;
@@ -24,32 +24,32 @@ instanciate the players
    @return true if the player had jumped
    */
   public boolean hadJumped() {
-   /* if (keyPressed) {
+    if (keyPressed) {
       if (key == jumpKey) {
         return true;
       }
     }
-    */
-    if(yellow){
-     return true; 
-    }
+
     return false;
   }
+
+  public boolean hadJumped(boolean b) {
+    return b;
+  }
+
 
 
   // capsulate the information for the cones/lifes
   private class Cone {
     int cones = 3;
   }
-  
+
   /**
    *decrease the lifes of a player if he took a hit
-  */
-  void decreaseCones()  {
-    if(cone.cones > 0){
+   */
+  void decreaseCones() {
+    if (cone.cones > 0) {
       cone.cones--;
     }
-    
   }
-  
 }

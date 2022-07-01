@@ -1,8 +1,9 @@
 
 
+
 /**
  TODO -> amountOfPlayer setzen
- -> camera logic 
+ -> camera logic -> "richtig machen
  -> setup loose for less then 4 player !
  */
 import controlP5.*;
@@ -36,7 +37,10 @@ Button startGameButton;
 //ScreenThree / mainGame
 InGameLogic igl;
 Button backToMainMenu;
-int amountOfPlayers = 1;
+int amountOfPlayers = 3;
+
+// debug
+float selectNumber = 0;
 
 //Camera stuff
 
@@ -49,11 +53,14 @@ void setup() {
   // screenThree setup
   igl = new InGameLogic(amountOfPlayers);
   camSetup(); ////////////////////////////////////////////////////////////////////////////////
-  
+
 }
 
 void draw() {
-
+setupP1Yellow();
+setupP2Blue();
+setupP3Red();
+  
   switch(state) {
   case 0:
     background(300, 182, 30);
@@ -64,13 +71,24 @@ void draw() {
     igl.drawInGame();
     break;
   }
+
+  text("amountOfPlayer: " + selectNumber, 100, 100);
 }
 
 void controlEvent(ControlEvent theControlEvent) {
-  if (theControlEvent.isFrom(numberOfPlayersList)) {
+  if (theControlEvent.isGroup()) {
     //TODO hier Anzahl = playerNumber als Variable in Logik merken -> TOM
     //-> aufruf von igl.setPlayerAmount(amountOfPlayers);
+    selectNumber = theControlEvent.getController().getValue();
+    amountOfPlayers = int(selectNumber + 1);
+    if (theControlEvent.isGroup()) {
+      // check if the Event was triggered from a ControlGroup
+      println("event from group : "+theControlEvent.getGroup().getValue()+" from "+theControlEvent.getGroup());
+    }
+    igl.setPlayerAmount(amountOfPlayers);
   }
+
+
 
   if (theControlEvent.isFrom(startButton)) {
     //dann starte Screen Two

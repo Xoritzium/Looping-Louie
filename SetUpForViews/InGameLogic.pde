@@ -1,4 +1,4 @@
-// stores the needed inGameLogic //<>// //<>//
+// stores the needed inGameLogic //<>// //<>// //<>//
 public class InGameLogic {
   /** create the Logic
    @param playerCount = amount of players
@@ -37,8 +37,8 @@ public class InGameLogic {
 
 
   // center of the picture, origin from where everthing gets calculated
-  float originX = width / 3; //width / 2;
-  float originY = height/ 2; //width /2;
+  float originX = width * 2/3;
+  float originY = height/ 2;
   //////////Louie/////////////////
   Louie louie;
 
@@ -108,7 +108,7 @@ Keep things clean, everything i need and is not defined for draw() is stored her
 
     if (!gameOver) {// while game is still running
       setGameOver();
-     background(#ffb61e); // refresh the canvas every second
+      background(#ffb61e); // refresh the canvas every second
 
       ///////////////////////Player hits Louie////////////////////////////
       playerHitLouie();
@@ -117,18 +117,14 @@ Keep things clean, everything i need and is not defined for draw() is stored her
       ////////////////////////////////////////////////////////////////////
       ui();
       notifyViewForPlayers(); // draw PLayers
-      
+
       louie.movement(); // move louie
       view.drawLouie(louie.xpos, louie.ypos); // draw louie (always in the same frame as louie.movement() !!
-      
+
       gameLoop(); ////////////////////////////////////////////////////////////////////////
-      
-      
     } else {
       gameOver(winner);
     }
-    
- 
   }
 
 
@@ -185,7 +181,7 @@ Keep things clean, everything i need and is not defined for draw() is stored her
   boolean checkPlayerHitLouie(float lx, float ly, Player p, float[] hb) {
     if (lx >= hb[0] && lx <= hb[1]
       && ly >= hb[2] && ly <= hb[3] && p.hadJumped()) {
-        
+
       return true;
     }
     return false;
@@ -197,11 +193,11 @@ Keep things clean, everything i need and is not defined for draw() is stored her
    Logic for the confirmation a player hit Louie
    */
   void playerHitLouie() {
-    if  (checkPlayerHitLouie(louie.xpos, louie.ypos, top, topBounds) && !ignoreTop) { // top
+    if  ( !ignoreTop && isBlue()) { // top //////////////////////////////////////////////////////////////sehr nasty !! züccknehmen. ist nicht besser
       louie.indicator = true; // set collision off
-    } else if  (checkPlayerHitLouie(louie.xpos, louie.ypos, right, rightBounds) && !ignoreRight) { // right
+    } else if  ( !ignoreRight && isYellow()) { // right
       louie.indicator = true; // set collision off
-    } else if  (checkPlayerHitLouie(louie.xpos, louie.ypos, down, downBounds) && !ignoreDown) { // down
+    } else if  ( !ignoreDown && isRed()) { // down
       louie.indicator = true; // set collision off
     } else  if  (checkPlayerHitLouie(louie.xpos, louie.ypos, left, leftBounds) && !ignoreLeft) { // left
       louie.indicator = true; // set collision off
@@ -232,7 +228,7 @@ sets the gameOver state
 clean up
    return to main menu ?
    */
-  private void gameOver(int winner) { //<>//
+  private void gameOver(int winner) {
     view.drawEndScreen(winner);
   }
 
@@ -254,10 +250,10 @@ clean up
     case 3:
       view.drawPlayer(top.xpos, top.ypos, 0);
       view.drawPlayer(right.xpos, right.ypos, 1);
-      view.drawPlayer(down.xpos, down.ypos, 2);
-      view.topJumps(top.hadJumped());
-      view.rightJumps(right.hadJumped());
-      view.downJumps(down.hadJumped());
+      view.drawPlayer(down.xpos, down.ypos, 2);///////////////////////////////nasty
+      view.topJumps(top.hadJumped(isBlue()));
+      view.rightJumps(right.hadJumped(isYellow()));
+      view.downJumps(down.hadJumped(isRed()));
       break;
     case 4:
       view.drawPlayer(top.xpos, top.ypos, 0);
