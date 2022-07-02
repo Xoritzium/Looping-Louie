@@ -33,6 +33,9 @@ public class Player {
     return false;
   }
 
+/**
+called with method call from each color
+*/
   public boolean hadJumped(boolean b) {
     return b;
   }

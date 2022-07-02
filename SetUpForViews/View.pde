@@ -153,7 +153,7 @@ public class View {
    */
   void drawUIElements(int[] hearts, int players) {
     imageMode(CORNER);
-    camDraw();
+    camDraw(0,0);
     drawHearts(hearts, players);
   }
 
@@ -161,7 +161,7 @@ public class View {
    draw the endScreen after the game ends and show the winner
    */
   void drawEndScreen(int winner) {
-    background(255, 0, 0);
+    background(240, 150, 30);
     imageMode(CENTER);
     switch(winner) {
     case 0:

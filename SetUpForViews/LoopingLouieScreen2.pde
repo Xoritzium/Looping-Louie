@@ -44,5 +44,5 @@ void setupScreenTwo() {
     .setFont(font)
     .setColorForeground(color(140, 225, 10))
     .setColorActive(color(40, 255, 40));
-    
+       
 }

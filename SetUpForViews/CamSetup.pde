@@ -20,7 +20,7 @@
       
       // The camera can be initialized directly using an 
       // element from the array returned by list():
-      cam = new Capture(this, cameras[1]);
+      cam = new Capture(this, cameras[0]);
       cam.start();     
     }
  }
@@ -30,10 +30,11 @@
 //--Cam Draw-----------------------------
 //---------------------------------------
 
-  void camDraw(){
+  void camDraw(float x, float y){
     if(cam.available()) {
     cam.read();
     }
-  image(cam, -62, 0,  762, 480); //weired tech, weired values :) (-62, 0,  762, 480)
+  image(cam, x,y,640,480); //weired tech, weired values :) (-62, 0,  762, 480)
   
   }
+  

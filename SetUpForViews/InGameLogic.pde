@@ -1,10 +1,10 @@
-// stores the needed inGameLogic //<>// //<>// //<>//
+// stores the needed inGameLogic //<>// //<>// //<>// //<>// //<>// //<>// //<>//
 public class InGameLogic {
   /** create the Logic
    @param playerCount = amount of players
    */
-  public InGameLogic(int playerCount) {
-    this.playerCount = playerCount;
+  public InGameLogic(int amountOfPlayers) {
+    this.playerCount = amountOfPlayers;
     switch(playerCount) {
     case 1:
       ignoreRight = true;
@@ -34,6 +34,8 @@ public class InGameLogic {
   //first seconds noone can be hit
   boolean initiateDraw = true;
   int winner = -1; //defining the winner
+
+  boolean useCam = false; // switch between cam and keyboard
 
 
   // center of the picture, origin from where everthing gets calculated
@@ -109,19 +111,28 @@ Keep things clean, everything i need and is not defined for draw() is stored her
     if (!gameOver) {// while game is still running
       setGameOver();
       background(#ffb61e); // refresh the canvas every second
+      //  setupEachFrameOfEachPlayer(); // preperation for each frame of the colortracking
+      gameLoop(); //parrallel threads to
+
 
       ///////////////////////Player hits Louie////////////////////////////
-      playerHitLouie();
+      if (useCam) {
+        playerHitLouieWithCam();   //with cam tracking
+      } else {
+        playerHitLouieWithButtons(); // with keyboard
+      }
       ////////////////////////// Louie hits a players cone////////////////
       louieHitPlayer();
       ////////////////////////////////////////////////////////////////////
       ui();
-      notifyViewForPlayers(); // draw PLayers
+      if (useCam) {
+        notifyViewForPlayersWithCam(); // draw PLayers // with tracking
+      } else {
+        notifyViewForPlayersWithButtons(); // with keyboard
+      }
 
       louie.movement(); // move louie
       view.drawLouie(louie.xpos, louie.ypos); // draw louie (always in the same frame as louie.movement() !!
-
-      gameLoop(); ////////////////////////////////////////////////////////////////////////
     } else {
       gameOver(winner);
     }
@@ -177,8 +188,27 @@ Keep things clean, everything i need and is not defined for draw() is stored her
    @param ly = louies ypos
    @param p = the player which hitbox is checked
    @param hb = bounds of the individual player
+   @param colorReturned = method call for color track of each player
    */
-  boolean checkPlayerHitLouie(float lx, float ly, Player p, float[] hb) {
+  boolean checkPlayerHitLouie(float lx, float ly, Player p, float[] hb, boolean colorReturned) {
+    if (lx >= hb[0] && lx <= hb[1]
+      && ly >= hb[2] && ly <= hb[3] && p.hadJumped(colorReturned)) {
+
+      return true;
+    }
+    return false;
+  }
+
+  /*
+ if a Player hits Louie return true
+   is called in a specific order in draw()
+   @param lx = louies xpos
+   @param ly = louies ypos
+   @param p = the player which hitbox is checked
+   @param hb = bounds of the individual player
+   @param colorReturned = method call for color track of each player
+   */
+  boolean checkPlayerHitLouieWithButtons(float lx, float ly, Player p, float[] hb) {
     if (lx >= hb[0] && lx <= hb[1]
       && ly >= hb[2] && ly <= hb[3] && p.hadJumped()) {
 
@@ -187,40 +217,84 @@ Keep things clean, everything i need and is not defined for draw() is stored her
     return false;
   }
 
-
-
   /**
    Logic for the confirmation a player hit Louie
    */
-  void playerHitLouie() {
-    if  ( !ignoreTop && isBlue()) { // top //////////////////////////////////////////////////////////////sehr nasty !! züccknehmen. ist nicht besser
+  void playerHitLouieWithCam() {
+    if  (checkPlayerHitLouie(louie.xpos, louie.ypos, top, topBounds, isYellow()) && !ignoreTop) { // top //////////////////////////////////////////////////////////////sehr nasty !! züccknehmen. ist nicht besser
       louie.indicator = true; // set collision off
-    } else if  ( !ignoreRight && isYellow()) { // right
+    } else if  (checkPlayerHitLouie(louie.xpos, louie.ypos, right, rightBounds, isBlue()) && !ignoreRight) { // right
       louie.indicator = true; // set collision off
-    } else if  ( !ignoreDown && isRed()) { // down
+    } else if  (checkPlayerHitLouie(louie.xpos, louie.ypos, down, downBounds, isRed()) && !ignoreDown) { // down
       louie.indicator = true; // set collision off
-    } else  if  (checkPlayerHitLouie(louie.xpos, louie.ypos, left, leftBounds) && !ignoreLeft) { // left
+    } else  if  (checkPlayerHitLouie(louie.xpos, louie.ypos, left, leftBounds, isGreen()) && !ignoreLeft) { // left
       louie.indicator = true; // set collision off
     }
   }
+
+  /**without camera tracking
+   */
+  void playerHitLouieWithButtons() {
+    if  (checkPlayerHitLouieWithButtons(louie.xpos, louie.ypos, top, topBounds) && !ignoreTop) { // top //////////////////////////////////////////////////////////////sehr nasty !! züccknehmen. ist nicht besser
+      louie.indicator = true; // set collision off
+    } else if  (checkPlayerHitLouieWithButtons(louie.xpos, louie.ypos, right, rightBounds) && !ignoreRight) { // right
+      louie.indicator = true; // set collision off
+    } else if  (checkPlayerHitLouieWithButtons(louie.xpos, louie.ypos, down, downBounds) && !ignoreDown) { // down
+      louie.indicator = true; // set collision off
+    } else  if  (checkPlayerHitLouieWithButtons(louie.xpos, louie.ypos, left, leftBounds) && !ignoreLeft) { // left
+      louie.indicator = true; // set collision off
+    }
+  }
+
   //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   /*
 sets the gameOver state
    */
   private void setGameOver() {
-    if (top.cone.cones == 0 && right.cone.cones == 0 && down.cone.cones == 0 && left.cone.cones > 0) {
-      winner = 3;
-      gameOver =true;
-    } else if (top.cone.cones == 0 && right.cone.cones == 0 && down.cone.cones > 0 && left.cone.cones  == 0) {
-      winner = 2;
-      gameOver =true;
-    } else if (top.cone.cones == 0 && right.cone.cones > 0 && down.cone.cones == 0 && left.cone.cones  == 0) {
-      winner = 1;
-      gameOver =true;
-    } else if (top.cone.cones > 0 && right.cone.cones == 0 && down.cone.cones == 0 && left.cone.cones  == 0) {
-      winner = 0;
-      gameOver =true;
+    switch(playerCount) { // between 1-4
+    case 1:
+      if (top.cone.cones == 0) {
+        winner = 0;
+        gameOver =true;
+      }
+      break;
+    case 2:
+      if (top.cone.cones > 0 &&  down.cone.cones == 0 ) {
+        winner = 0; // top
+        gameOver =true;
+      } else if (top.cone.cones ==0 && down.cone.cones > 0) {
+        winner = 2;
+        gameOver = true;
+      }
+      break;
+    case 3:
+      if (top.cone.cones > 0 && right.cone.cones == 0 && down.cone.cones == 0) {
+        winner = 0;
+        gameOver = true;
+      } else if (top.cone.cones == 0 && right.cone.cones > 0 && down.cone.cones == 0) {
+        winner = 1;
+        gameOver = true;
+      } else if (top.cone.cones == 0 && right.cone.cones == 0 && down.cone.cones > 0) {
+        winner = 2;
+        gameOver = true;
+      }
+      break;
+    case 4:
+      if (top.cone.cones == 0 && right.cone.cones == 0 && down.cone.cones == 0 && left.cone.cones > 0) {
+        winner = 3; //left
+        gameOver =true;
+      } else if (top.cone.cones == 0 && right.cone.cones == 0 && down.cone.cones > 0 && left.cone.cones  == 0) {
+        winner = 2; //down
+        gameOver =true;
+      } else if (top.cone.cones == 0 && right.cone.cones > 0 && down.cone.cones == 0 && left.cone.cones  == 0) {
+        winner = 1; // right
+        gameOver =true;
+      } else if (top.cone.cones > 0 && right.cone.cones == 0 && down.cone.cones == 0 && left.cone.cones  == 0) {
+        winner = 0; // top
+        gameOver =true;
+      }
+      break;
     }
   }
 
@@ -235,7 +309,45 @@ clean up
   /**
    Draw the given amount of Players
    */
-  void notifyViewForPlayers() {
+  void notifyViewForPlayersWithCam() {                  // working with cam tracking
+    switch(playerCount) {
+    case 1:
+      view.drawPlayer(top.xpos, top.ypos, 0);
+      view.topJumps(top.hadJumped(isYellow()));
+      break;
+    case 2:
+      view.drawPlayer(top.xpos, top.ypos, 0);
+      view.drawPlayer(down.xpos, down.ypos, 2);
+      view.topJumps(top.hadJumped(isYellow()));
+      view.downJumps(down.hadJumped(isRed()));
+      break;
+    case 3:
+      view.drawPlayer(top.xpos, top.ypos, 0);
+      view.drawPlayer(right.xpos, right.ypos, 1);
+      view.drawPlayer(down.xpos, down.ypos, 2);
+      view.topJumps(top.hadJumped(isYellow()));
+      view.rightJumps(right.hadJumped(isBlue()));
+      view.downJumps(down.hadJumped(isRed()));
+      break;
+    case 4:
+      view.drawPlayer(top.xpos, top.ypos, 0);
+      view.drawPlayer(right.xpos, right.ypos, 1);
+      view.drawPlayer(down.xpos, down.ypos, 2);
+      view.drawPlayer(left.xpos, left.ypos, 3);
+      view.topJumps(top.hadJumped(isYellow()));
+      view.rightJumps(right.hadJumped(isBlue()));
+      view.downJumps(down.hadJumped(isRed()));
+      view.leftJumps(left.hadJumped(isGreen()));
+      break;
+    default:
+      break;
+    }
+  }
+
+  /**
+   Draw the given amount of Players
+   */
+  void notifyViewForPlayersWithButtons() {                  // working with Buttons
     switch(playerCount) {
     case 1:
       view.drawPlayer(top.xpos, top.ypos, 0);
@@ -245,15 +357,15 @@ clean up
       view.drawPlayer(top.xpos, top.ypos, 0);
       view.drawPlayer(down.xpos, down.ypos, 2);
       view.topJumps(top.hadJumped());
-      view.downJumps(right.hadJumped());
+      view.downJumps(down.hadJumped());
       break;
     case 3:
       view.drawPlayer(top.xpos, top.ypos, 0);
       view.drawPlayer(right.xpos, right.ypos, 1);
-      view.drawPlayer(down.xpos, down.ypos, 2);///////////////////////////////nasty
-      view.topJumps(top.hadJumped(isBlue()));
-      view.rightJumps(right.hadJumped(isYellow()));
-      view.downJumps(down.hadJumped(isRed()));
+      view.drawPlayer(down.xpos, down.ypos, 2);
+      view.topJumps(top.hadJumped());
+      view.rightJumps(right.hadJumped());
+      view.downJumps(down.hadJumped());
       break;
     case 4:
       view.drawPlayer(top.xpos, top.ypos, 0);
@@ -278,7 +390,13 @@ clean up
   }
 
 
-  void setPlayerAmount(int p) {
-    this.playerCount = p;
+  /**
+   stores the methodcalls for each frame for the player color
+   */
+  void setupEachFrameOfEachPlayer() {
+    setupP1Yellow();
+    setupP2Blue();
+    setupP3Red();
+    setupP4Green();
   }
 }

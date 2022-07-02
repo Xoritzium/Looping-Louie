@@ -37,10 +37,9 @@ Button startGameButton;
 //ScreenThree / mainGame
 InGameLogic igl;
 Button backToMainMenu;
-int amountOfPlayers = 3;
+int amountOfPlayers;
 
-// debug
-float selectNumber = 0;
+
 
 //Camera stuff
 
@@ -50,17 +49,12 @@ void setup() {
   // -> automatisch auf bildschirm des Users angepasst
   frameRate(30);
   setupScreenOne();
-  // screenThree setup
-  igl = new InGameLogic(amountOfPlayers);
-  camSetup(); ////////////////////////////////////////////////////////////////////////////////
 
+  camSetup(); // start the cam capture
 }
 
 void draw() {
-setupP1Yellow();
-setupP2Blue();
-setupP3Red();
-  
+
   switch(state) {
   case 0:
     background(300, 182, 30);
@@ -72,23 +66,14 @@ setupP3Red();
     break;
   }
 
-  text("amountOfPlayer: " + selectNumber, 100, 100);
+  text("amountOfPlayer: " + amountOfPlayers, 100, 100);
 }
 
 void controlEvent(ControlEvent theControlEvent) {
-  if (theControlEvent.isGroup()) {
-    //TODO hier Anzahl = playerNumber als Variable in Logik merken -> TOM
-    //-> aufruf von igl.setPlayerAmount(amountOfPlayers);
-    selectNumber = theControlEvent.getController().getValue();
-    amountOfPlayers = int(selectNumber + 1);
-    if (theControlEvent.isGroup()) {
-      // check if the Event was triggered from a ControlGroup
-      println("event from group : "+theControlEvent.getGroup().getValue()+" from "+theControlEvent.getGroup());
-    }
-    igl.setPlayerAmount(amountOfPlayers);
+  if (theControlEvent.isController()) {
+    float selectNumber = theControlEvent.getController().getValue();
+    amountOfPlayers = int(selectNumber) + 1;
   }
-
-
 
   if (theControlEvent.isFrom(startButton)) {
     //dann starte Screen Two
@@ -139,15 +124,13 @@ void controlEvent(ControlEvent theControlEvent) {
 
     KopfFueslerMovie.stop();
     KopfFueslerMovie.dispose();
-
-
-    igl.inGameLogicSetup(this);
-    state = 1; // start game
+    igl = new InGameLogic(amountOfPlayers); // initiate the Game //<>//
+    igl.inGameLogicSetup(this); //<>//
+    state = 1; // start game //<>//
   }
 
   if (theControlEvent.isFrom(backToMainMenu)) {
     backToMainMenu.hide();
-    igl = new InGameLogic(amountOfPlayers);
 
     startButton.show();
     numberOfPlayersList.show();
